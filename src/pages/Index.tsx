@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase, Tags, Type, Globe } from 'lucide-react';
+import { Briefcase, Tags, Type, Globe, Store } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -35,6 +35,12 @@ const Index = () => {
             description="Find the perfect domain name for your website"
             icon={<Globe className="text-primary" />}
             linkTo="/tools/domain-name-generator"
+          />
+          <ToolCard 
+            title="Etsy Shop Name Generator" 
+            description="Create a memorable name for your Etsy shop"
+            icon={<Store className="text-primary" />}
+            linkTo="/tools/etsy-shop-name-generator"
           />
         </div>
       </div>
