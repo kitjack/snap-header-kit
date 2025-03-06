@@ -1,17 +1,16 @@
 
 import React from 'react';
-import Header from '@/components/Header';
+import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
+    <Layout>
       <HeroSection />
       <div className="flex-grow">
         {/* Content area is now empty */}
       </div>
-    </div>
+    </Layout>
   );
 };
 

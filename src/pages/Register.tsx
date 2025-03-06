@@ -1,14 +1,13 @@
 
 import React from 'react';
-import Header from '@/components/Header';
+import Layout from '@/components/Layout';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 
 const Register = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <div className="flex-grow flex items-center justify-center">
+    <Layout>
+      <div className="flex-grow flex items-center justify-center py-12">
         <div className="max-w-md w-full p-6 bg-white rounded-lg shadow-md">
           <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
           <p className="text-center mb-6">Registration page coming soon</p>
@@ -17,7 +16,7 @@ const Register = () => {
           </Button>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 };
 
