@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase, Tags, Type } from 'lucide-react';
+import { Briefcase, Tags, Type, Globe } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -29,6 +29,12 @@ const Index = () => {
             description="Create memorable slogans for your business"
             icon={<Type className="text-primary" />}
             linkTo="/tools/slogan-generator"
+          />
+          <ToolCard 
+            title="Domain Name Generator" 
+            description="Find the perfect domain name for your website"
+            icon={<Globe className="text-primary" />}
+            linkTo="/tools/domain-name-generator"
           />
         </div>
       </div>
