@@ -17,6 +17,7 @@ import BusinessNameGenerator from "./pages/business-name-generator";
 import EtsyTagGenerator from "./pages/etsy-tag-generator";
 import SloganGenerator from "./pages/slogan-generator";
 import DomainNameGenerator from "./pages/domain-name-generator";
+import EtsyShopNameGenerator from "./pages/etsy-shop-name-generator";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/tools/etsy-tag-generator" element={<EtsyTagGenerator />} />
             <Route path="/tools/slogan-generator" element={<SloganGenerator />} />
             <Route path="/tools/domain-name-generator" element={<DomainNameGenerator />} />
+            <Route path="/tools/etsy-shop-name-generator" element={<EtsyShopNameGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
