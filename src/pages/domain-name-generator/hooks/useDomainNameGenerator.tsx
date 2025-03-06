@@ -82,6 +82,13 @@ export const useDomainNameGenerator = () => {
     setInsufficientCredits(false);
     
     try {
+      console.log("Calling generate-domain-names function with:", {
+        keywords: formData.keywords,
+        industry: formData.industry,
+        extensions: formData.extensions,
+        userId: user.id
+      });
+      
       // Call the Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('generate-domain-names', {
         body: {
@@ -91,6 +98,8 @@ export const useDomainNameGenerator = () => {
           userId: user.id
         }
       });
+
+      console.log("Edge function response:", data, error);
 
       if (error) {
         throw new Error(error.message);

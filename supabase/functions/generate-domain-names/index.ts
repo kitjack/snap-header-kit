@@ -48,11 +48,10 @@ Please follow these guidelines:
 5. Keep names reasonably short and pronounceable
 6. Return exactly 10 domain names
 
-For each domain, provide:
-- The domain name with extension
-- Whether it's likely available (true/false based on your best guess)
-
-Return the result as a JSON array of objects, each with 'name', 'extension', and 'available' properties.`;
+Format the response as a JSON object with a "domains" array containing objects with these properties:
+- "name": the domain name without extension (e.g., "example")
+- "extension": the extension with dot (e.g., ".com")
+- "available": a boolean guess if the domain might be available (true/false)`;
 
     console.log("Sending prompt to OpenAI:", prompt);
 
@@ -66,7 +65,10 @@ Return the result as a JSON array of objects, each with 'name', 'extension', and
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'You are a domain name generator assistant. Generate creative, brandable domain names based on user input. Return only the requested JSON format without explanations or additional text.' },
+          { 
+            role: 'system', 
+            content: 'You are a domain name generator assistant. Generate creative, brandable domain names based on user input. Return only the requested JSON format without explanations or additional text.' 
+          },
           { role: 'user', content: prompt }
         ],
         response_format: { type: "json_object" },
@@ -83,61 +85,62 @@ Return the result as a JSON array of objects, each with 'name', 'extension', and
     const data = await response.json();
     console.log("OpenAI response:", data);
     
-    // Parse the JSON response
-    let domainNames = [];
+    let domains = [];
     try {
-      const parsedContent = JSON.parse(data.choices[0].message.content);
-      domainNames = Array.isArray(parsedContent.domains) ? parsedContent.domains : [];
+      const content = data.choices[0].message.content;
+      console.log("Raw content:", content);
       
-      if (domainNames.length === 0) {
-        // If the structure is different, try to find an array in the response
-        const potentialArrays = Object.values(parsedContent).filter(val => Array.isArray(val));
-        if (potentialArrays.length > 0) {
-          domainNames = potentialArrays[0];
-        }
+      const parsedResponse = JSON.parse(content);
+      console.log("Parsed response:", parsedResponse);
+      
+      if (parsedResponse && parsedResponse.domains && Array.isArray(parsedResponse.domains)) {
+        domains = parsedResponse.domains;
+      } else {
+        // Look for any array in the response as a fallback
+        Object.keys(parsedResponse).forEach(key => {
+          if (Array.isArray(parsedResponse[key]) && parsedResponse[key].length > 0) {
+            domains = parsedResponse[key];
+          }
+        });
       }
+      
+      if (domains.length === 0) {
+        throw new Error("Could not find domain array in OpenAI response");
+      }
+      
+      // Ensure proper format for each domain
+      domains = domains.map(domain => {
+        if (typeof domain === 'string') {
+          const parts = domain.split('.');
+          const extension = parts.length > 1 ? `.${parts.pop()}` : '.com';
+          return {
+            name: parts.join('.'),
+            extension,
+            available: true
+          };
+        } else {
+          return {
+            name: domain.name || '',
+            extension: domain.extension || '.com',
+            available: domain.available === undefined ? true : domain.available
+          };
+        }
+      });
+      
     } catch (error) {
-      console.error('Error parsing OpenAI response:', error);
-      console.log('Raw content:', data.choices[0].message.content);
-      return new Response(
-        JSON.stringify({ error: 'Failed to parse generated domain names' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+      console.error("Error parsing OpenAI response:", error);
+      throw new Error(`Failed to parse domain names: ${error.message}`);
     }
 
-    // Ensure we have the right format and limit to 10 domains
-    const formattedDomains = domainNames.slice(0, 10).map(domain => {
-      // Handle different possible response structures
-      if (typeof domain === 'string') {
-        // If it's just a string, parse it
-        const parts = domain.split('.');
-        const extension = parts.length > 1 ? `.${parts.pop()}` : '.com';
-        return {
-          name: parts.join('.'),
-          extension,
-          available: Math.random() > 0.3 // Randomize availability as a fallback
-        };
-      } else {
-        // Clean up object format to ensure consistency
-        return {
-          name: domain.name ? domain.name.replace(/\..+$/, '') : '',
-          extension: domain.extension || (domain.name ? `.${domain.name.split('.').pop()}` : '.com'),
-          available: typeof domain.available === 'boolean' ? domain.available : Math.random() > 0.3
-        };
-      }
-    });
-
-    return new Response(JSON.stringify({ 
-      domains: formattedDomains,
-      prompt
-    }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ domains: domains.slice(0, 10) }),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   } catch (error) {
     console.error('Error in generate-domain-names function:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 });
