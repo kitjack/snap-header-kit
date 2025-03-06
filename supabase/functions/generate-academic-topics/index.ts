@@ -30,7 +30,7 @@ serve(async (req) => {
 
     console.log('Generate academic topics request:', { fieldOfStudy, academicLevel, interests, keywords });
 
-    // Create a detailed prompt for OpenAI
+    // Create a detailed prompt for OpenAI with explicit formatting instructions
     const prompt = `Generate 2 detailed academic project topic ideas for a ${academicLevel} student in ${fieldOfStudy}. 
     The student is interested in: ${interests || 'various aspects of the field'}. 
     Additional keywords to consider: ${keywords || 'none specified'}.
@@ -41,7 +41,25 @@ serve(async (req) => {
     3. Potential research methods or approach
     4. Expected outcomes or significance
     
-    Format as a JSON array with objects containing: title, description, approach, and significance fields.`;
+    Format your response as a valid JSON array with objects containing these exact fields: title, description, approach, and significance.
+
+    Example of the expected JSON format:
+    [
+      {
+        "title": "Project Title 1",
+        "description": "Description of project 1",
+        "approach": "Research approach for project 1",
+        "significance": "Significance of project 1"
+      },
+      {
+        "title": "Project Title 2",
+        "description": "Description of project 2",
+        "approach": "Research approach for project 2",
+        "significance": "Significance of project 2"
+      }
+    ]
+
+    Make sure your response is ONLY the JSON array with no additional text or formatting.`;
 
     // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -55,7 +73,7 @@ serve(async (req) => {
         messages: [
           { 
             role: 'system', 
-            content: 'You are an academic advisor specializing in generating project ideas across various fields. Provide detailed, specific, and realistic project topics that would be suitable for academic research or development.'
+            content: 'You are an academic advisor specializing in generating project ideas across various fields. Provide detailed, specific, and realistic project topics as valid JSON only.'
           },
           { role: 'user', content: prompt }
         ],
@@ -72,17 +90,24 @@ serve(async (req) => {
 
     let topics;
     try {
-      // Parse the content as JSON
+      // Remove any extra text surrounding the JSON
       const content = data.choices[0].message.content;
-      topics = JSON.parse(content);
+      // Extract JSON content - looking for anything between square brackets
+      const jsonMatch = content.match(/\[[\s\S]*\]/);
+      const jsonContent = jsonMatch ? jsonMatch[0] : content;
+      
+      console.log('Parsed content from API:', jsonContent);
+      
+      // Parse the content as JSON
+      topics = JSON.parse(jsonContent);
       
       // Ensure we have exactly 2 topics with the expected format
-      if (!Array.isArray(topics) || topics.length !== 2) {
-        throw new Error('API returned incorrect number of topics');
+      if (!Array.isArray(topics)) {
+        throw new Error('API did not return an array of topics');
       }
       
-      // Validate the structure of each topic
-      topics = topics.map((topic, index) => ({
+      // Validate and limit to 2 topics
+      topics = topics.slice(0, 2).map((topic, index) => ({
         id: index + 1,
         title: topic.title || `Topic ${index + 1}`,
         description: topic.description || '',
