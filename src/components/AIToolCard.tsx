@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2 } from "lucide-react";
+import { Loader2, Copy } from "lucide-react";
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from '@/hooks/use-toast';
 import { generateToolContent } from '@/services/aiToolsService';
@@ -35,6 +35,26 @@ const AIToolCard = ({
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
   const { user, profile, refreshProfile } = useAuth();
+
+  const copyToClipboard = () => {
+    if (!result) return;
+    
+    navigator.clipboard.writeText(result)
+      .then(() => {
+        toast({
+          title: "Copied!",
+          description: "Result copied to clipboard",
+        });
+      })
+      .catch(err => {
+        console.error("Failed to copy text: ", err);
+        toast({
+          title: "Copy failed",
+          description: "Could not copy to clipboard",
+          variant: "destructive",
+        });
+      });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +115,7 @@ const AIToolCard = ({
       console.error('Error using AI tool:', error);
       toast({
         title: "Error",
-        description: "Failed to generate. Your credits have not been deducted.",
+        description: `Failed to generate: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
@@ -161,7 +181,15 @@ const AIToolCard = ({
       {/* Result Card */}
       <Card className="w-full lg:col-span-7">
         <CardHeader>
-          <CardTitle className="text-xl">Result</CardTitle>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-xl">Result</CardTitle>
+            {result && (
+              <Button variant="outline" size="sm" onClick={copyToClipboard}>
+                <Copy className="h-4 w-4 mr-2" />
+                Copy
+              </Button>
+            )}
+          </div>
           <CardDescription>Your generated output</CardDescription>
         </CardHeader>
         <CardContent>

@@ -34,8 +34,13 @@ export const generateAIContent = async ({
   }
 
   console.log("Calling OpenAI with system message:", systemMessage);
+  console.log("Prompt:", prompt);
   
   try {
+    if (!apiKey) {
+      throw new Error("OpenAI API key is missing");
+    }
+    
     const openai = new OpenAI({
       apiKey: apiKey,
       dangerouslyAllowBrowser: true, // For client-side usage
@@ -51,9 +56,15 @@ export const generateAIContent = async ({
     });
 
     const generatedText = response.choices[0].message.content || '';
+    console.log("Generated text:", generatedText);
     return generatedText;
   } catch (error) {
     console.error('Error calling OpenAI:', error);
+    toast({
+      title: "Error",
+      description: `Failed to generate content: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      variant: "destructive"
+    });
     throw error;
   }
 };
