@@ -1,13 +1,18 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Briefcase, Copy, Loader2 } from 'lucide-react';
+import { Briefcase, Copy, Loader2, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+
+// Cost per generation in credits
+const GENERATION_COST = 10;
 
 const BusinessNameGenerator = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +22,16 @@ const BusinessNameGenerator = () => {
   });
   const [generatedNames, setGeneratedNames] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [insufficientCredits, setInsufficientCredits] = useState(false);
   const { toast } = useToast();
+  const { user, profile, loading } = useAuth();
+
+  useEffect(() => {
+    // Reset insufficient credits state when profile changes
+    if (profile && profile.credits >= GENERATION_COST) {
+      setInsufficientCredits(false);
+    }
+  }, [profile]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -25,6 +39,40 @@ const BusinessNameGenerator = () => {
       ...prev,
       [name]: value
     }));
+  };
+
+  const deductCredits = async () => {
+    if (!user) return false;
+    
+    try {
+      // Check if user has enough credits
+      if (!profile || profile.credits < GENERATION_COST) {
+        setInsufficientCredits(true);
+        return false;
+      }
+
+      // Update credits in database
+      const { error } = await supabase
+        .from('profiles')
+        .update({ credits: profile.credits - GENERATION_COST })
+        .eq('id', user.id);
+
+      if (error) {
+        console.error('Error updating credits:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update credits. Please try again.",
+          variant: "destructive",
+        });
+        return false;
+      }
+
+      // Success
+      return true;
+    } catch (error) {
+      console.error('Error in deductCredits:', error);
+      return false;
+    }
   };
 
   const handleGenerate = async () => {
@@ -37,11 +85,35 @@ const BusinessNameGenerator = () => {
       return;
     }
 
+    // Check if user is logged in
+    if (!user) {
+      toast({
+        title: "Login required",
+        description: "Please login to generate business names.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsGenerating(true);
+    
+    // Deduct credits before generating
+    const deductionSuccessful = await deductCredits();
+    if (!deductionSuccessful) {
+      setIsGenerating(false);
+      if (!insufficientCredits) {
+        toast({
+          title: "Error",
+          description: "Failed to process credits. Please try again.",
+          variant: "destructive",
+        });
+      }
+      return;
+    }
     
     // Simulate API call with a timeout
     setTimeout(() => {
-      // Mock data for demonstration
+      // Generate business names
       const { description, industry, keywords } = formData;
       const keywordsArray = keywords.split(',').map(k => k.trim()).filter(k => k);
       
@@ -65,6 +137,18 @@ const BusinessNameGenerator = () => {
         });
       }
       
+      // Store result in database
+      if (user) {
+        supabase.from('ai_tool_results').insert({
+          user_id: user.id,
+          tool_id: 'business-name-generator',
+          prompt: JSON.stringify(formData),
+          result: JSON.stringify(mockNames)
+        }).then(({ error }) => {
+          if (error) console.error('Error saving result:', error);
+        });
+      }
+      
       setGeneratedNames(mockNames);
       setIsGenerating(false);
     }, 1500);
@@ -76,6 +160,28 @@ const BusinessNameGenerator = () => {
       title: "Copied!",
       description: "Business name copied to clipboard.",
     });
+  };
+
+  const renderCreditInfo = () => {
+    if (loading) return <div className="text-sm text-muted-foreground">Loading credits...</div>;
+    
+    if (!user) return <div className="text-sm text-amber-600">Login to generate names</div>;
+    
+    if (insufficientCredits) {
+      return (
+        <div className="flex items-center gap-1 text-sm text-destructive">
+          <AlertCircle className="h-4 w-4" />
+          <span>Insufficient credits</span>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="text-sm text-muted-foreground">
+        Cost: <span className="font-semibold text-secondary">{GENERATION_COST} credits</span> | 
+        Available: <span className="font-semibold text-secondary">{profile?.credits || 0} credits</span>
+      </div>
+    );
   };
 
   return (
@@ -128,9 +234,13 @@ const BusinessNameGenerator = () => {
                 />
               </div>
               
+              <div className="py-1">
+                {renderCreditInfo()}
+              </div>
+              
               <Button 
                 onClick={handleGenerate} 
-                disabled={isGenerating || !formData.description.trim()}
+                disabled={isGenerating || !formData.description.trim() || !user || (profile && profile.credits < GENERATION_COST)}
                 className="w-full bg-teal-400 hover:bg-teal-500 text-white mt-2"
               >
                 {isGenerating ? (
