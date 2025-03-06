@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -21,7 +20,7 @@ export const useDomainNameGenerator = () => {
   const [formData, setFormData] = useState<FormData>({
     keywords: '',
     industry: '',
-    extensions: '.com,.net,.org,.io'
+    extensions: 'All Popular Extensions'
   });
   const [results, setResults] = useState<DomainResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,31 +37,37 @@ export const useDomainNameGenerator = () => {
     }));
   };
 
-  const generateDomainNames = async () => {
-    // This is a mock implementation. In a real app, you would call an API
-    // or use a service to generate domain names and check availability
-    const keywords = formData.keywords.split(/[\s,]+/).filter(k => k.length > 0);
-    const extensions = formData.extensions.trim() 
-      ? formData.extensions.split(/[\s,]+/).filter(e => e.startsWith('.'))
-      : ['.com', '.net', '.org', '.io'];
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-    // Generate domains based on keywords
+  const generateDomainNames = async () => {
+    const keywords = formData.keywords.split(/[\s,]+/).filter(k => k.length > 0);
+    
+    let extensions: string[];
+    if (formData.extensions === 'All Popular Extensions') {
+      extensions = ['.com', '.net', '.org', '.io', '.co', '.app'];
+    } else {
+      extensions = [formData.extensions];
+    }
+
     const domains: DomainResult[] = [];
     
-    // Add direct keyword domains
     keywords.forEach(keyword => {
       extensions.forEach(ext => {
         if (keyword.length > 2) {
           domains.push({
             name: keyword.toLowerCase().replace(/[^a-z0-9]/g, ''),
             extension: ext,
-            available: Math.random() > 0.5 // Random availability for demo
+            available: Math.random() > 0.5
           });
         }
       });
     });
     
-    // Add keyword combinations
     if (keywords.length >= 2) {
       for (let i = 0; i < keywords.length; i++) {
         for (let j = i + 1; j < keywords.length; j++) {
@@ -78,7 +83,6 @@ export const useDomainNameGenerator = () => {
       }
     }
     
-    // Add industry-specific domains
     if (formData.industry) {
       const industryWord = formData.industry.toLowerCase().replace(/[^a-z0-9]/g, '');
       keywords.forEach(keyword => {
@@ -98,7 +102,6 @@ export const useDomainNameGenerator = () => {
       });
     }
     
-    // Add some creative variations
     keywords.forEach(keyword => {
       if (keyword.length > 3) {
         ['my', 'get', 'the', 'top', 'best'].forEach(prefix => {
@@ -111,11 +114,9 @@ export const useDomainNameGenerator = () => {
       }
     });
     
-    // Shuffle and limit results
     const shuffled = domains
       .sort(() => 0.5 - Math.random())
       .filter((domain, index, self) => 
-        // Remove duplicates
         index === self.findIndex(d => d.name === domain.name && d.extension === domain.extension)
       )
       .slice(0, 10);
@@ -191,6 +192,7 @@ export const useDomainNameGenerator = () => {
     error,
     insufficientCredits,
     handleInputChange,
+    handleSelectChange,
     handleSubmit,
     copyToClipboard,
     renderCreditInfo,

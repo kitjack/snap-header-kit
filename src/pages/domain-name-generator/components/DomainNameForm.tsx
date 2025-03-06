@@ -4,6 +4,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Loader2, AlertCircle, Coins } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -19,6 +26,7 @@ interface FormData {
 interface DomainNameFormProps {
   formData: FormData;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onSelectChange?: (name: string, value: string) => void;
   onSubmit: () => Promise<void>;
   isLoading: boolean;
   insufficientCredits?: boolean;
@@ -27,9 +35,26 @@ interface DomainNameFormProps {
   profile?: any;
 }
 
+// Domain extension options
+const extensionOptions = [
+  "All Popular Extensions",
+  ".com",
+  ".net",
+  ".org",
+  ".io",
+  ".co",
+  ".app",
+  ".dev",
+  ".ai",
+  ".me",
+  ".tech",
+  ".store",
+];
+
 const DomainNameForm: React.FC<DomainNameFormProps> = ({
   formData,
   onChange,
+  onSelectChange,
   onSubmit,
   isLoading,
   insufficientCredits,
@@ -67,15 +92,22 @@ const DomainNameForm: React.FC<DomainNameFormProps> = ({
       
       <div>
         <Label htmlFor="extensions" className="mb-1.5 block">Domain Extensions</Label>
-        <Input
-          id="extensions"
-          name="extensions"
-          placeholder=".com, .io, .net, .org (comma separated)"
-          value={formData.extensions}
-          onChange={onChange}
-          className="focus-visible:ring-1"
-        />
-        <p className="text-xs text-muted-foreground mt-1">Leave empty to include all popular extensions</p>
+        <Select
+          value={formData.extensions || "All Popular Extensions"}
+          onValueChange={(value) => onSelectChange && onSelectChange('extensions', value)}
+        >
+          <SelectTrigger className="focus-visible:ring-1 w-full">
+            <SelectValue placeholder="Select domain extensions" />
+          </SelectTrigger>
+          <SelectContent>
+            {extensionOptions.map((extension) => (
+              <SelectItem key={extension} value={extension}>
+                {extension}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-muted-foreground mt-1">Select "All Popular Extensions" to include all common extensions</p>
       </div>
       
       {renderCreditInfo && (

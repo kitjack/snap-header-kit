@@ -12,6 +12,7 @@ const DomainNameGenerator = () => {
     formData,
     results,
     handleInputChange,
+    handleSelectChange,
     handleSubmit,
     resetForm
   } = useDomainNameGenerator();
@@ -29,6 +30,7 @@ const DomainNameGenerator = () => {
             formData={formData}
             isLoading={isLoading}
             onChange={handleInputChange}
+            onSelectChange={handleSelectChange}
             onSubmit={handleSubmit}
           />
 
