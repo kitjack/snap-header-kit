@@ -38,6 +38,8 @@ const AIToolCard = ({
   const { user, profile, refreshProfile } = useAuth();
   const { toast } = useToast();
 
+  // We'll still save the result to the database for analytics purposes,
+  // but we won't be using it for displaying to the user
   const saveResultToDatabase = async (userPrompt: string, generatedResult: string) => {
     if (!user) return;
     
@@ -53,11 +55,6 @@ const AIToolCard = ({
 
       if (error) {
         console.error('Error saving result to database:', error);
-        toast({
-          title: "Warning",
-          description: "Generated successfully but failed to save your result.",
-          variant: "destructive",
-        });
       }
     } catch (err) {
       console.error('Error in saveResultToDatabase:', err);
@@ -95,7 +92,7 @@ const AIToolCard = ({
     }
 
     setLoading(true);
-    setResult('');
+    setResult(''); // Clear the current result
 
     try {
       console.log("Starting generation with prompt:", prompt);
@@ -172,7 +169,7 @@ const AIToolCard = ({
       // Save the result to database
       await saveResultToDatabase(prompt, generatedText);
       
-      // Set the result and refresh the profile to get updated credits
+      // Set the result in the component's state
       setResult(generatedText);
       await refreshProfile();
       
@@ -247,7 +244,7 @@ const AIToolCard = ({
         </CardContent>
       </Card>
 
-      {/* Current Result Card */}
+      {/* Result Card */}
       <Card className="w-full lg:col-span-7">
         <CardHeader>
           <CardTitle className="text-xl">Result</CardTitle>
