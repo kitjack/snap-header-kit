@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
@@ -99,12 +98,7 @@ const BusinessNameGenerator = () => {
           {/* Results Section - Right Side */}
           <Card className={`h-fit ${generatedNames.length === 0 ? 'bg-accent/20' : ''}`}>
             <CardHeader>
-              <CardTitle>Generated Names</CardTitle>
-              <CardDescription>
-                {generatedNames.length > 0 
-                  ? "Here are some business name suggestions based on your description." 
-                  : "Your generated business names will appear here."}
-              </CardDescription>
+              <CardTitle>Results</CardTitle>
             </CardHeader>
             <CardContent>
               {isGenerating ? (
@@ -132,8 +126,7 @@ const BusinessNameGenerator = () => {
                 </div>
               ) : (
                 <div className="text-center py-10 text-muted-foreground">
-                  <Briefcase className="h-10 w-10 mx-auto mb-3 opacity-50" />
-                  <p>Enter a description and click "Generate Names" to see results</p>
+                  <p className="text-sm">Results will show here</p>
                 </div>
               )}
             </CardContent>
