@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -101,6 +100,8 @@ const AIToolCard = ({
         creditCost
       );
       
+      console.log("Generated content:", content);
+      
       // Set the result directly in the UI
       setResult(content);
       
@@ -198,8 +199,8 @@ const AIToolCard = ({
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : result ? (
-            <div className="bg-secondary/10 rounded-md p-4 h-48 overflow-y-auto">
-              <div className="whitespace-pre-line text-sm">{result}</div>
+            <div className="bg-secondary/10 rounded-md p-4 h-48 overflow-y-auto whitespace-pre-line">
+              {result}
             </div>
           ) : (
             <div className="flex justify-center items-center h-48 text-muted-foreground">
