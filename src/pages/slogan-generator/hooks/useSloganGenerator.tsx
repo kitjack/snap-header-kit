@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,7 +15,7 @@ interface SloganResult {
 }
 
 // Cost per generation in credits
-export const GENERATION_COST = 5;
+export const GENERATION_COST = 10;
 
 export const useSloganGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
