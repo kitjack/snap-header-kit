@@ -43,15 +43,15 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'You are a professional LinkedIn profile expert who writes compelling and effective bios. Generate 5 distinct LinkedIn bios based on the information provided.'
+            content: 'You are a professional LinkedIn profile expert who writes compelling and effective bios. Generate 3 distinct LinkedIn bios based on the information provided.'
           },
           {
             role: 'user',
-            content: `Create 5 compelling LinkedIn bios for a ${profession} with ${experience} years of experience. 
+            content: `Create 3 compelling LinkedIn bios for a ${profession} with ${experience} years of experience. 
             Skills include: ${skills}. 
             The tone should be ${tone}.
             Each bio should be unique and professionally formatted.
-            Format the response as a JSON array of objects, each with "id" (a number 1-5) and "bio" (the text of the bio).`
+            Format the response as a JSON array of objects, each with "id" (a number 1-3) and "bio" (the text of the bio).`
           }
         ],
         temperature: 0.7,
@@ -82,7 +82,7 @@ serve(async (req) => {
         // If extraction fails, manually parse the text
         console.log("Failed to parse JSON, creating structured data manually");
         const biosTexts = content.split(/Bio \d+:|^\d+\./m).filter(text => text.trim().length > 0);
-        bios = biosTexts.map((bio, index) => ({
+        bios = biosTexts.slice(0, 3).map((bio, index) => ({
           id: index + 1,
           bio: bio.trim()
         }));
