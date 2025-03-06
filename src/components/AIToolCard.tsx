@@ -164,64 +164,83 @@ const AIToolCard = ({
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex items-center gap-2">
-          <div className="text-primary">
-            {icon}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+      {/* Input Form Card */}
+      <Card className="w-full">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <div className="text-primary">
+              {icon}
+            </div>
+            <CardTitle className="text-xl">{title}</CardTitle>
           </div>
-          <CardTitle className="text-xl">{title}</CardTitle>
-        </div>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor={`prompt-${id}`}>{inputLabel}</Label>
-            {useTextarea ? (
-              <Textarea
-                id={`prompt-${id}`}
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder={placeholder}
-                className="resize-none h-24"
-                required
-              />
-            ) : (
-              <Input
-                id={`prompt-${id}`}
-                type="text"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder={placeholder}
-                required
-              />
-            )}
-          </div>
-          <Button 
-            type="submit" 
-            disabled={loading || !user || (profile && profile.credits < creditCost)}
-            className="w-full"
-          >
-            {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>Try Now • {creditCost} Credits</>
-            )}
-          </Button>
-        </form>
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor={`prompt-${id}`}>{inputLabel}</Label>
+              {useTextarea ? (
+                <Textarea
+                  id={`prompt-${id}`}
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder={placeholder}
+                  className="resize-none h-24"
+                  required
+                />
+              ) : (
+                <Input
+                  id={`prompt-${id}`}
+                  type="text"
+                  value={prompt}
+                  onChange={(e) => setPrompt(e.target.value)}
+                  placeholder={placeholder}
+                  required
+                />
+              )}
+            </div>
+            <Button 
+              type="submit" 
+              disabled={loading || !user || (profile && profile.credits < creditCost)}
+              className="w-full"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                <>Try Now • {creditCost} Credits</>
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-        {result && (
-          <div className="mt-4 p-4 bg-secondary/10 rounded-md">
-            <p className="text-sm font-medium mb-2">Results:</p>
-            <div className="whitespace-pre-line text-sm">{result}</div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      {/* Results Card */}
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-xl">Results</CardTitle>
+          <CardDescription>Generated output will appear here</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="flex justify-center items-center h-48">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : result ? (
+            <div className="bg-secondary/10 rounded-md p-4 h-48 overflow-y-auto">
+              <div className="whitespace-pre-line text-sm">{result}</div>
+            </div>
+          ) : (
+            <div className="flex justify-center items-center h-48 text-muted-foreground">
+              No result yet. Submit a prompt to see results here.
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

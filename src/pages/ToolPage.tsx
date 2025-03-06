@@ -16,7 +16,7 @@ const tools = {
     placeholder: 'E.g., A sustainable clothing brand focusing on eco-friendly materials',
     inputLabel: 'Describe your business',
     useTextarea: true,
-    creditCost: 10 // Updated to 10 credits
+    creditCost: 10
   },
   'etsy-tags': {
     id: 'etsy-tags',
@@ -26,7 +26,7 @@ const tools = {
     placeholder: 'E.g., Handmade ceramic mug with floral design',
     inputLabel: 'Describe your product',
     useTextarea: true,
-    creditCost: 10 // Updated to 10 credits
+    creditCost: 10
   },
   'slogan': {
     id: 'slogan',
@@ -36,7 +36,7 @@ const tools = {
     placeholder: 'E.g., A coffee shop that sources beans directly from farmers',
     inputLabel: 'Describe your business',
     useTextarea: true,
-    creditCost: 10 // Updated to 10 credits
+    creditCost: 10
   }
 };
 
@@ -75,7 +75,7 @@ const ToolPage = () => {
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <AIToolCard
             id={tool.id}
             title={tool.title}
