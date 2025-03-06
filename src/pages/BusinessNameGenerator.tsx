@@ -54,7 +54,7 @@ const BusinessNameGenerator = () => {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto py-8">
+      <div className="max-w-6xl mx-auto py-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="bg-accent w-12 h-12 rounded-full flex items-center justify-center">
             <Briefcase className="text-primary" />
@@ -62,60 +62,83 @@ const BusinessNameGenerator = () => {
           <h1 className="text-3xl font-bold">Business Name Generator</h1>
         </div>
         
-        <Card>
-          <CardHeader>
-            <CardTitle>Generate business names</CardTitle>
-            <CardDescription>
-              Describe your business and we'll generate creative name suggestions for you.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              placeholder="Enter description of your business (e.g., a tech startup focused on AI solutions for healthcare)"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
-              className="min-h-[120px] mb-4"
-            />
-            
-            <Button 
-              onClick={handleGenerate} 
-              disabled={isGenerating || !prompt.trim()}
-              className="w-full"
-            >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Generating...
-                </>
-              ) : (
-                'Generate Names'
-              )}
-            </Button>
-          </CardContent>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Form Section - Left Side */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Generate business names</CardTitle>
+              <CardDescription>
+                Describe your business and we'll generate creative name suggestions for you.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                placeholder="Enter description of your business (e.g., a tech startup focused on AI solutions for healthcare)"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                className="min-h-[120px] mb-4"
+              />
+              
+              <Button 
+                onClick={handleGenerate} 
+                disabled={isGenerating || !prompt.trim()}
+                className="w-full"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  'Generate Names'
+                )}
+              </Button>
+            </CardContent>
+          </Card>
           
-          {generatedNames.length > 0 && (
-            <CardFooter className="flex-col items-start">
-              <h3 className="font-medium text-lg mb-3">Generated Names:</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
-                {generatedNames.map((name, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center justify-between p-3 bg-accent/30 rounded-md"
-                  >
-                    <span>{name}</span>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={() => copyToClipboard(name)}
+          {/* Results Section - Right Side */}
+          <Card className={`h-fit ${generatedNames.length === 0 ? 'bg-accent/20' : ''}`}>
+            <CardHeader>
+              <CardTitle>Generated Names</CardTitle>
+              <CardDescription>
+                {generatedNames.length > 0 
+                  ? "Here are some business name suggestions based on your description." 
+                  : "Your generated business names will appear here."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {isGenerating ? (
+                <div className="flex flex-col items-center justify-center py-10">
+                  <Loader2 className="h-10 w-10 animate-spin text-primary mb-3" />
+                  <p className="text-muted-foreground">Generating creative names...</p>
+                </div>
+              ) : generatedNames.length > 0 ? (
+                <div className="grid grid-cols-1 gap-2 w-full">
+                  {generatedNames.map((name, index) => (
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-3 bg-accent/30 rounded-md hover:bg-accent/50 transition-colors"
                     >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </CardFooter>
-          )}
-        </Card>
+                      <span className="font-medium">{name}</span>
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={() => copyToClipboard(name)}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-10 text-muted-foreground">
+                  <Briefcase className="h-10 w-10 mx-auto mb-3 opacity-50" />
+                  <p>Enter a description and click "Generate Names" to see results</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </Layout>
   );
