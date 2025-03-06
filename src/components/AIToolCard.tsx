@@ -132,8 +132,8 @@ const AIToolCard = ({
       const generatedText = response.choices[0].message.content || '';
       console.log("Generated text:", generatedText);
       
-      // Then update the credits in the database
-      const { data, error } = await supabase
+      // Update credits in the database before setting the result to ensure UI updates properly
+      const { error } = await supabase
         .from('profiles')
         .update({ 
           credits: (profile.credits || 0) - creditCost,
@@ -180,6 +180,7 @@ const AIToolCard = ({
             <Label htmlFor={`prompt-${id}`}>{inputLabel}</Label>
             {useTextarea ? (
               <Textarea
+                id={`prompt-${id}`}
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder={placeholder}
@@ -188,6 +189,7 @@ const AIToolCard = ({
               />
             ) : (
               <Input
+                id={`prompt-${id}`}
                 type="text"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
