@@ -29,7 +29,6 @@ const EtsyDescriptionForm = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Generate SEO-Optimized Etsy Tags</CardTitle>
         <CardDescription>
           Enter your product details to generate up to 13 SEO-optimized tags for your Etsy listing
         </CardDescription>
@@ -41,15 +40,12 @@ const EtsyDescriptionForm = ({
             <Textarea
               id="productDescription"
               name="productDescription"
-              placeholder="Describe your Etsy product in detail (materials, colors, size, usage, benefits)..."
+              placeholder="Describe your Etsy product in detail..."
               value={formData.productDescription}
               onChange={onChange}
               className="resize-none h-32"
               required
             />
-            <p className="text-xs text-muted-foreground">
-              Be specific about materials, color, size, and what makes your product unique
-            </p>
           </div>
 
           <div className="space-y-2">
@@ -61,9 +57,6 @@ const EtsyDescriptionForm = ({
               value={formData.category}
               onChange={onChange}
             />
-            <p className="text-xs text-muted-foreground">
-              The main category or niche your product belongs to
-            </p>
           </div>
 
           <div className="space-y-2">
@@ -75,9 +68,6 @@ const EtsyDescriptionForm = ({
               value={formData.keywords}
               onChange={onChange}
             />
-            <p className="text-xs text-muted-foreground">
-              Add style descriptors, occasions, or themes (comma separated)
-            </p>
           </div>
 
           <Button type="submit" disabled={isLoading} className="w-full">
