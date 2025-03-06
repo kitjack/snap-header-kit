@@ -1,15 +1,14 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import OpenAI from 'openai';
+import { toast } from '@/hooks/use-toast';
+import { generateToolContent } from '@/services/aiToolsService';
 
 interface AIToolCardProps {
   id: string;
@@ -36,30 +35,6 @@ const AIToolCard = ({
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
   const { user, profile, refreshProfile } = useAuth();
-  const { toast } = useToast();
-
-  // We'll still save the result to the database for analytics purposes,
-  // but we won't be using it for displaying to the user
-  const saveResultToDatabase = async (userPrompt: string, generatedResult: string) => {
-    if (!user) return;
-    
-    try {
-      const { error } = await supabase
-        .from('ai_tool_results')
-        .insert({
-          user_id: user.id,
-          tool_id: id,
-          prompt: userPrompt,
-          result: generatedResult
-        });
-
-      if (error) {
-        console.error('Error saving result to database:', error);
-      }
-    } catch (err) {
-      console.error('Error in saveResultToDatabase:', err);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,80 +72,19 @@ const AIToolCard = ({
     try {
       console.log("Starting generation with prompt:", prompt);
       
-      // Get OpenAI API key from Supabase
-      console.log("Fetching OpenAI API key from edge function...");
-      const { data: apiKeyData, error: apiKeyError } = await supabase.functions.invoke('get-openai-key');
+      // Generate content and handle credits in one operation
+      const { content, newCredits } = await generateToolContent(
+        user.id,
+        id,
+        prompt,
+        profile.credits || 0,
+        creditCost
+      );
       
-      console.log("API key response:", apiKeyData, apiKeyError);
+      // Set the result directly in the UI
+      setResult(content);
       
-      if (apiKeyError) {
-        throw new Error(`API key error: ${apiKeyError.message}`);
-      }
-      
-      if (!apiKeyData?.apiKey) {
-        throw new Error('Could not retrieve OpenAI API key - key is null or undefined');
-      }
-      
-      console.log("OpenAI API key retrieved successfully");
-      
-      const openai = new OpenAI({
-        apiKey: apiKeyData.apiKey,
-        dangerouslyAllowBrowser: true, // Note: This is not recommended for production
-      });
-
-      // Create system messages based on tool type
-      let systemMessage = "You are a helpful assistant.";
-      
-      switch (id) {
-        case 'business-name':
-          systemMessage = "You are a business naming expert. Generate 5 creative, unique, and memorable business names based on the description provided. Format your response as a numbered list. Be concise and professional.";
-          break;
-        
-        case 'etsy-tags':
-          systemMessage = "You are an Etsy SEO expert. Generate 10 relevant and effective Etsy tags for the product described. Format each tag with a # prefix. Focus on searchable and trending keywords that will help the product get discovered.";
-          break;
-        
-        case 'slogan':
-          systemMessage = "You are a branding expert specializing in slogan creation. Generate 5 catchy, memorable slogans for the business described. Format your response as a numbered list. Each slogan should be concise and convey the essence of the brand.";
-          break;
-        
-        default:
-          systemMessage = "You are a helpful assistant. Provide a detailed and helpful response to the prompt.";
-      }
-
-      console.log("Calling OpenAI with system message:", systemMessage);
-      
-      // Call OpenAI API directly
-      const response = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemMessage },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-      });
-
-      console.log("OpenAI response received:", response);
-      
-      const generatedText = response.choices[0].message.content || '';
-      console.log("Generated text:", generatedText);
-      
-      // Update credits in the database before setting the result to ensure UI updates properly
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          credits: (profile.credits || 0) - creditCost,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', user.id);
-
-      if (error) throw error;
-      
-      // Save the result to database
-      await saveResultToDatabase(prompt, generatedText);
-      
-      // Set the result in the component's state
-      setResult(generatedText);
+      // Refresh profile to show updated credits
       await refreshProfile();
       
       toast({
