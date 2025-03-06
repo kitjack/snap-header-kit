@@ -25,7 +25,9 @@ const UpdatePassword = () => {
       // Check if user is in the recovery process from Supabase auth state
       const checkRecoveryState = async () => {
         const { data } = await supabase.auth.getSession();
-        if (data.session?.user?.aal === "aal1" && data.session?.user?.recovery_mode) {
+        // Instead of checking specific properties that don't exist on the User type,
+        // we'll simply check if there's an active session for password recovery
+        if (data.session && hash.includes('type=recovery')) {
           setHasResetToken(true);
         }
       };
