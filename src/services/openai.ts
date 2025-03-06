@@ -1,5 +1,6 @@
 
 import { toast } from "@/hooks/use-toast";
+import OpenAI from "openai";
 
 interface GenerateAIContentProps {
   toolId: string;
