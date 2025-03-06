@@ -67,15 +67,15 @@ const ToolPage = () => {
 
   return (
     <Layout>
-      <div className="py-12">
-        <div className="mb-10">
+      <div className="py-8">
+        <div className="mb-8">
           <h1 className="text-3xl font-bold mb-3">{tool.title}</h1>
           <p className="text-muted-foreground">
             {tool.description}
           </p>
         </div>
 
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <AIToolCard
             id={tool.id}
             title={tool.title}

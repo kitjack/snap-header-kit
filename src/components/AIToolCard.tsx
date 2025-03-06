@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,8 +35,86 @@ const AIToolCard = ({
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingResults, setLoadingResults] = useState(true);
+  const [previousResults, setPreviousResults] = useState<Array<{id: string, prompt: string, result: string, created_at: string}>>([]);
   const { user, profile, refreshProfile } = useAuth();
   const { toast } = useToast();
+
+  // Fetch previous results when component mounts
+  useEffect(() => {
+    const fetchPreviousResults = async () => {
+      if (!user) {
+        setLoadingResults(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('ai_tool_results')
+          .select('id, prompt, result, created_at')
+          .eq('user_id', user.id)
+          .eq('tool_id', id)
+          .order('created_at', { ascending: false })
+          .limit(5);
+
+        if (error) {
+          console.error('Error fetching previous results:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load your previous results.",
+            variant: "destructive",
+          });
+        } else {
+          setPreviousResults(data || []);
+        }
+      } catch (err) {
+        console.error('Error in fetchPreviousResults:', err);
+      } finally {
+        setLoadingResults(false);
+      }
+    };
+
+    fetchPreviousResults();
+  }, [user, id, toast]);
+
+  const saveResultToDatabase = async (userPrompt: string, generatedResult: string) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('ai_tool_results')
+        .insert({
+          user_id: user.id,
+          tool_id: id,
+          prompt: userPrompt,
+          result: generatedResult
+        });
+
+      if (error) {
+        console.error('Error saving result to database:', error);
+        toast({
+          title: "Warning",
+          description: "Generated successfully but failed to save your result.",
+          variant: "destructive",
+        });
+      } else {
+        // Refresh the previous results list
+        const { data, error: fetchError } = await supabase
+          .from('ai_tool_results')
+          .select('id, prompt, result, created_at')
+          .eq('user_id', user.id)
+          .eq('tool_id', id)
+          .order('created_at', { ascending: false })
+          .limit(5);
+        
+        if (!fetchError) {
+          setPreviousResults(data || []);
+        }
+      }
+    } catch (err) {
+      console.error('Error in saveResultToDatabase:', err);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +221,9 @@ const AIToolCard = ({
 
       if (error) throw error;
       
+      // Save the result to database
+      await saveResultToDatabase(prompt, generatedText);
+      
       // Set the result and refresh the profile to get updated credits
       setResult(generatedText);
       await refreshProfile();
@@ -164,9 +245,9 @@ const AIToolCard = ({
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
       {/* Input Form Card */}
-      <Card className="w-full">
+      <Card className="w-full lg:col-span-5">
         <CardHeader>
           <div className="flex items-center gap-2">
             <div className="text-primary">
@@ -218,28 +299,64 @@ const AIToolCard = ({
         </CardContent>
       </Card>
 
-      {/* Results Card */}
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle className="text-xl">Results</CardTitle>
-          <CardDescription>Generated output will appear here</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex justify-center items-center h-48">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : result ? (
-            <div className="bg-secondary/10 rounded-md p-4 h-48 overflow-y-auto">
-              <div className="whitespace-pre-line text-sm">{result}</div>
-            </div>
-          ) : (
-            <div className="flex justify-center items-center h-48 text-muted-foreground">
-              No result yet. Submit a prompt to see results here.
-            </div>
-          )}
-        </CardContent>
-      </Card>
+      {/* Results Section */}
+      <div className="w-full lg:col-span-7">
+        {/* Current Result Card */}
+        <Card className="w-full mb-6">
+          <CardHeader>
+            <CardTitle className="text-xl">Current Result</CardTitle>
+            <CardDescription>Your most recent generated output</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : result ? (
+              <div className="bg-secondary/10 rounded-md p-4 h-48 overflow-y-auto">
+                <div className="whitespace-pre-line text-sm">{result}</div>
+              </div>
+            ) : (
+              <div className="flex justify-center items-center h-48 text-muted-foreground">
+                No result yet. Submit a prompt to see results here.
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Previous Results Card */}
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle className="text-xl">Previous Results</CardTitle>
+            <CardDescription>Your previous generations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loadingResults ? (
+              <div className="flex justify-center items-center h-48">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : previousResults.length > 0 ? (
+              <div className="space-y-4 max-h-96 overflow-y-auto">
+                {previousResults.map((item) => (
+                  <div key={item.id} className="border rounded-md p-4">
+                    <div className="text-xs text-muted-foreground mb-1">
+                      {new Date(item.created_at).toLocaleString()}
+                    </div>
+                    <div className="font-medium text-sm mb-2">Prompt: {item.prompt}</div>
+                    <div className="bg-secondary/10 rounded-md p-3">
+                      <div className="whitespace-pre-line text-sm">{item.result}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex justify-center items-center h-48 text-muted-foreground">
+                No previous results found. Generate your first result!
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
