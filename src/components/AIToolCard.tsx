@@ -37,6 +37,26 @@ const AIToolCard = ({
   const { user, profile, refreshProfile } = useAuth();
   const { toast } = useToast();
 
+  // Generate response based on tool type
+  const generateResponse = (toolId: string, promptText: string) => {
+    // This is a simplified mock implementation
+    // In a real application, you'd integrate with actual AI APIs
+    
+    switch (toolId) {
+      case 'business-name':
+        return `Suggested business names based on "${promptText}":\n\n1. InnovateCraft\n2. PrimeVision Enterprises\n3. EcoSphere Solutions\n4. Zenith Dynamics\n5. QuantumLeap Industries`;
+      
+      case 'etsy-tags':
+        return `Recommended Etsy tags for "${promptText}":\n\n#handmade #craftedwithlove #customgift #uniquedesign #etsyfinds #specialgift #giftideas #homedecor #personalized #oneofakind`;
+      
+      case 'slogan':
+        return `Slogan ideas for "${promptText}":\n\n1. "Innovation That Inspires"\n2. "Building Tomorrow Today"\n3. "Excellence in Every Detail"\n4. "Your Vision, Our Mission"\n5. "Quality You Can Trust"`;
+      
+      default:
+        return `Generated content for "${promptText}"`;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -71,19 +91,22 @@ const AIToolCard = ({
     setResult('');
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-tools', {
-        body: {
-          tool: id,
-          prompt,
-          userId: user.id
-        }
-      });
+      // First generate the result
+      const generatedResult = generateResponse(id, prompt);
+      
+      // Then update the credits in the database
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ 
+          credits: (profile.credits || 0) - creditCost,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', user.id);
 
       if (error) throw error;
       
-      setResult(data.result);
-      
-      // Refresh user profile to get the updated credit balance
+      // Set the result and refresh the profile to get updated credits
+      setResult(generatedResult);
       await refreshProfile();
       
       toast({
