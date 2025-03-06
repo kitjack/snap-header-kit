@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase, Tags, Type, Globe, Store } from 'lucide-react';
+import { Briefcase, Tags, Type, Globe, Store, Zap } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -41,6 +41,12 @@ const Index = () => {
             description="Create a memorable name for your Etsy shop"
             icon={<Store className="text-primary" />}
             linkTo="/tools/etsy-shop-name-generator"
+          />
+          <ToolCard 
+            title="AI Prompt Enhancer" 
+            description="Improve your AI prompts for better results"
+            icon={<Zap className="text-primary" />}
+            linkTo="/tools/prompt-enhancer"
           />
         </div>
       </div>
