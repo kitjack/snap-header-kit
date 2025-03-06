@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
-import { CreditCard } from 'lucide-react';
 
 const Header = () => {
   const { user, profile, signOut } = useAuth();
@@ -22,9 +21,8 @@ const Header = () => {
       <div className="flex items-center space-x-4">
         {user ? (
           <>
-            <div className="flex items-center px-3 py-1 bg-secondary/10 text-secondary rounded-md">
-              <CreditCard className="h-4 w-4 mr-2" />
-              <span className="font-medium">{profile?.credits || 0} Credits</span>
+            <div className="text-sm font-medium px-3 py-1 bg-secondary/10 text-secondary rounded-md">
+              Credits: {profile?.credits || 0}
             </div>
             <Button asChild variant="ghost" className="bg-secondary hover:bg-secondary/90 text-white rounded-md px-6">
               <Link to="/profile">Profile</Link>
