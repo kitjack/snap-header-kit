@@ -67,7 +67,7 @@ serve(async (req) => {
     const data = await response.json();
     const result = data.choices[0].message.content;
 
-    // Deduct credits from the user's account
+    // Deduct credits from the user's account - changed from 5 to 10 credits
     const { error } = await fetch(
       `https://cqyyqhhafougprcnueek.supabase.co/rest/v1/profiles?id=eq.${userId}`,
       {
@@ -79,7 +79,7 @@ serve(async (req) => {
           'Prefer': 'return=minimal',
         },
         body: JSON.stringify({
-          credits: -5,  // Deduct 5 credits
+          credits: -10,  // Deduct 10 credits instead of 5
         }),
       }
     );

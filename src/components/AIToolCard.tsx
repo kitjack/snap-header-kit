@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,7 @@ const AIToolCard = ({
   placeholder,
   inputLabel,
   useTextarea = false,
-  creditCost = 5
+  creditCost = 10
 }: AIToolCardProps) => {
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState('');

@@ -29,7 +29,7 @@ const AITools = () => {
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold mb-3">AI Tools</h1>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Create content for your business with our AI-powered tools. Each tool uses 5 credits per generation.
+            Create content for your business with our AI-powered tools. Each tool uses 10 credits per generation.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ const AITools = () => {
             placeholder="E.g., A sustainable clothing brand focusing on eco-friendly materials"
             inputLabel="Describe your business"
             useTextarea={true}
-            creditCost={5}
+            creditCost={10}
           />
           
           <AIToolCard
@@ -53,7 +53,7 @@ const AITools = () => {
             placeholder="E.g., Handmade ceramic mug with floral design"
             inputLabel="Describe your product"
             useTextarea={true}
-            creditCost={5}
+            creditCost={10}
           />
           
           <AIToolCard
@@ -64,7 +64,7 @@ const AITools = () => {
             placeholder="E.g., A coffee shop that sources beans directly from farmers"
             inputLabel="Describe your business"
             useTextarea={true}
-            creditCost={5}
+            creditCost={10}
           />
         </div>
       </div>
