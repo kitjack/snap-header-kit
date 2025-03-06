@@ -1,6 +1,8 @@
 
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface FormData {
   productDescription: string;
@@ -20,6 +22,7 @@ export const useEtsyTagGenerator = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -32,12 +35,41 @@ export const useEtsyTagGenerator = () => {
     setError(null);
 
     try {
-      // Mock API call - In a real implementation, this would call an API endpoint
-      // For now, we'll simulate a response after a delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Check if user has enough credits (if authenticated)
+      if (profile && profile.credits < 10) {
+        throw new Error('You need at least 10 credits to generate tags. Please upgrade to premium.');
+      }
+
+      // Call the Supabase Edge Function
+      const { data, error: functionError } = await supabase.functions.invoke('generate-etsy-tags', {
+        body: {
+          productDescription: formData.productDescription,
+          category: formData.category,
+          keywords: formData.keywords
+        }
+      });
+
+      if (functionError) {
+        throw new Error(functionError.message || 'Failed to generate tags');
+      }
+
+      if (!data || !data.tags) {
+        throw new Error('No tags were generated. Please try again.');
+      }
+
+      setResults(data.tags);
       
-      const mockTags = generateMockTags(formData);
-      setResults(mockTags);
+      // Deduct credits if user is authenticated
+      if (profile) {
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ credits: profile.credits - 10 })
+          .eq('id', profile.id);
+          
+        if (updateError) {
+          console.error('Error updating credits:', updateError);
+        }
+      }
       
       toast({
         title: "Tags generated successfully!",
@@ -45,12 +77,12 @@ export const useEtsyTagGenerator = () => {
       });
     } catch (err) {
       console.error('Error generating tags:', err);
-      setError('Failed to generate tags. Please try again later.');
+      setError(err instanceof Error ? err.message : 'Failed to generate tags. Please try again later.');
       
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Something went wrong while generating tags.",
+        description: err instanceof Error ? err.message : "Something went wrong while generating tags.",
       });
     } finally {
       setIsLoading(false);
@@ -71,47 +103,4 @@ export const useEtsyTagGenerator = () => {
     handleSubmit,
     resetForm
   };
-};
-
-// Helper function to generate mock tags based on the input
-const generateMockTags = (formData: FormData): string[] => {
-  const { productDescription, category, keywords } = formData;
-  
-  const baseTags = [
-    "handmade",
-    "custom",
-    "unique",
-    "personalized",
-    "gift idea",
-    "trending",
-    "bestseller"
-  ];
-  
-  // Generate category-specific tags
-  const categoryTags = category
-    ? [category.toLowerCase(), `${category.toLowerCase()} gift`, `handmade ${category.toLowerCase()}`]
-    : [];
-  
-  // Extract keywords from product description
-  const descriptionWords = productDescription
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(word => word.length > 3)
-    .slice(0, 5)
-    .map(word => word.replace(/[^a-z0-9]/g, ''));
-  
-  // Process additional keywords
-  const additionalKeywords = keywords
-    ? keywords.toLowerCase().split(/[,\s]+/).filter(k => k.length > 0)
-    : [];
-  
-  // Combine all tags and remove duplicates
-  const allTags = [...new Set([
-    ...baseTags,
-    ...categoryTags,
-    ...descriptionWords,
-    ...additionalKeywords
-  ])].slice(0, 13); // Etsy allows max 13 tags
-  
-  return allTags;
 };
