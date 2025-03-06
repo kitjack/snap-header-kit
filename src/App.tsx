@@ -19,6 +19,7 @@ import SloganGenerator from "./pages/slogan-generator";
 import DomainNameGenerator from "./pages/domain-name-generator";
 import EtsyShopNameGenerator from "./pages/etsy-shop-name-generator";
 import PromptEnhancer from "./pages/prompt-enhancer";
+import LinkedInBioGenerator from "./pages/linkedin-bio-generator";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
             <Route path="/tools/domain-name-generator" element={<DomainNameGenerator />} />
             <Route path="/tools/etsy-shop-name-generator" element={<EtsyShopNameGenerator />} />
             <Route path="/tools/prompt-enhancer" element={<PromptEnhancer />} />
+            <Route path="/tools/linkedin-bio-generator" element={<LinkedInBioGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase, Tags, Type, Globe, Store, Zap } from 'lucide-react';
+import { Briefcase, Tags, Type, Globe, Store, Zap, Linkedin } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -47,6 +47,12 @@ const Index = () => {
             description="Improve your AI prompts for better results"
             icon={<Zap className="text-primary" />}
             linkTo="/tools/prompt-enhancer"
+          />
+          <ToolCard 
+            title="LinkedIn Bio Generator" 
+            description="Create professional LinkedIn bios that stand out"
+            icon={<Briefcase className="text-primary" />}
+            linkTo="/tools/linkedin-bio-generator"
           />
         </div>
       </div>
