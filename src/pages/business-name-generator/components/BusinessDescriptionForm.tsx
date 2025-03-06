@@ -81,31 +81,37 @@ const BusinessDescriptionForm: React.FC<BusinessDescriptionFormProps> = ({
         {renderCreditInfo()}
       </div>
       
-      {hasLowCredits ? (
-        <Button 
-          asChild
-          className="w-full bg-amber-500 hover:bg-amber-600 text-white mt-2"
-        >
-          <Link to="/premium">
-            <Coins className="mr-2 h-4 w-4" />
-            Top Up Credits
-          </Link>
-        </Button>
-      ) : (
-        <Button 
-          onClick={handleGenerate} 
-          disabled={isGenerating || !formData.description.trim() || !user || (profile && profile.credits < GENERATION_COST)}
-          className="w-full bg-teal-400 hover:bg-teal-500 text-white mt-2"
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Generating...
-            </>
-          ) : (
-            'Generate Names'
-          )}
-        </Button>
+      <Button 
+        onClick={handleGenerate} 
+        disabled={isGenerating || !formData.description.trim() || !user}
+        className="w-full bg-teal-400 hover:bg-teal-500 text-white mt-2"
+      >
+        {isGenerating ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Generating...
+          </>
+        ) : (
+          'Generate Names'
+        )}
+      </Button>
+      
+      {hasLowCredits && (
+        <div className="mt-3">
+          <div className="flex items-center gap-1 text-sm text-destructive mb-2">
+            <AlertCircle className="h-4 w-4" />
+            <span>Insufficient credits for generation</span>
+          </div>
+          <Button 
+            asChild
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+          >
+            <Link to="/premium">
+              <Coins className="mr-2 h-4 w-4" />
+              Top Up Credits
+            </Link>
+          </Button>
+        </div>
       )}
     </div>
   );
