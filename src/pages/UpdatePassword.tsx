@@ -1,42 +1,64 @@
 
-import React, { useState } from 'react';
-import { Navigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-const Login = () => {
-  const { signIn, user } = useAuth();
+const UpdatePassword = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
-  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [hasResetToken, setHasResetToken] = useState(false);
+
+  useEffect(() => {
+    // Check if we have a reset token in the URL
+    const hash = window.location.hash;
+    if (hash && hash.includes('type=recovery')) {
+      setHasResetToken(true);
+    } else {
+      // Check if user is in the recovery process from Supabase auth state
+      const checkRecoveryState = async () => {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user?.aal === "aal1" && data.session?.user?.recovery_mode) {
+          setHasResetToken(true);
+        }
+      };
+      checkRecoveryState();
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { error } = await signIn(email, password);
+      const { error } = await supabase.auth.updateUser({ password });
       
       if (error) {
         toast({
-          title: "Error signing in",
+          title: "Error",
           description: error.message,
           variant: "destructive",
         });
       } else {
         toast({
           title: "Success!",
-          description: "You have been signed in",
+          description: "Your password has been updated successfully",
         });
+        
+        // Redirect to login page after successful password update
+        setTimeout(() => {
+          navigate('/login');
+        }, 2000);
       }
     } catch (error) {
-      console.error('Error signing in:', error);
+      console.error('Error updating password:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
@@ -47,9 +69,8 @@ const Login = () => {
     }
   };
 
-  // Redirect if user is already logged in
-  if (user) {
-    return <Navigate to="/" />;
+  if (!hasResetToken) {
+    return <Navigate to="/login" />;
   }
 
   return (
@@ -57,31 +78,15 @@ const Login = () => {
       <div className="flex items-center justify-center flex-grow py-12">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle className="text-2xl text-center">Login</CardTitle>
+            <CardTitle className="text-2xl text-center">Update Password</CardTitle>
             <CardDescription className="text-center">
-              Enter your credentials to access your account
+              Enter your new password below
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <Link to="/reset-password" className="text-sm text-primary hover:underline">
-                    Forgot password?
-                  </Link>
-                </div>
+                <Label htmlFor="password">New Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -89,25 +94,19 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
+                  minLength={6}
                 />
+                <p className="text-xs text-gray-500">Password must be at least 6 characters long</p>
               </div>
               <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? "Updating password..." : "Update Password"}
               </Button>
             </form>
           </CardContent>
-          <CardFooter className="flex justify-center">
-            <div className="text-sm text-center">
-              Don't have an account?{" "}
-              <Link to="/register" className="text-primary hover:underline">
-                Sign up
-              </Link>
-            </div>
-          </CardFooter>
         </Card>
       </div>
     </Layout>
   );
 };
 
-export default Login;
+export default UpdatePassword;
