@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import OpenAI from 'openai';
 
 interface AIToolCardProps {
   id: string;
@@ -71,15 +72,49 @@ const AIToolCard = ({
     setResult('');
 
     try {
-      // First call the edge function to generate content
-      const { data: aiResponse, error: aiError } = await supabase.functions.invoke('generate-ai-content', {
-        body: {
-          toolId: id,
-          prompt
-        }
+      // Get OpenAI API key from Supabase
+      const { data: apiKeyData, error: apiKeyError } = await supabase.functions.invoke('get-openai-key', {});
+      
+      if (apiKeyError || !apiKeyData?.apiKey) {
+        throw new Error('Could not retrieve OpenAI API key');
+      }
+      
+      const openai = new OpenAI({
+        apiKey: apiKeyData.apiKey,
+        dangerouslyAllowBrowser: true, // Note: This is not recommended for production
       });
 
-      if (aiError) throw aiError;
+      // Create system messages based on tool type
+      let systemMessage = "You are a helpful assistant.";
+      
+      switch (id) {
+        case 'business-name':
+          systemMessage = "You are a business naming expert. Generate 5 creative, unique, and memorable business names based on the description provided. Format your response as a numbered list. Be concise and professional.";
+          break;
+        
+        case 'etsy-tags':
+          systemMessage = "You are an Etsy SEO expert. Generate 10 relevant and effective Etsy tags for the product described. Format each tag with a # prefix. Focus on searchable and trending keywords that will help the product get discovered.";
+          break;
+        
+        case 'slogan':
+          systemMessage = "You are a branding expert specializing in slogan creation. Generate 5 catchy, memorable slogans for the business described. Format your response as a numbered list. Each slogan should be concise and convey the essence of the brand.";
+          break;
+        
+        default:
+          systemMessage = "You are a helpful assistant. Provide a detailed and helpful response to the prompt.";
+      }
+
+      // Call OpenAI API directly
+      const response = await openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemMessage },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.7,
+      });
+
+      const generatedText = response.choices[0].message.content || '';
       
       // Then update the credits in the database
       const { data, error } = await supabase
@@ -93,7 +128,7 @@ const AIToolCard = ({
       if (error) throw error;
       
       // Set the result and refresh the profile to get updated credits
-      setResult(aiResponse.result);
+      setResult(generatedText);
       await refreshProfile();
       
       toast({
@@ -111,24 +146,6 @@ const AIToolCard = ({
       setLoading(false);
     }
   };
-
-  const InputComponent = useTextarea ? (
-    <Textarea
-      value={prompt}
-      onChange={(e) => setPrompt(e.target.value)}
-      placeholder={placeholder}
-      className="resize-none h-24"
-      required
-    />
-  ) : (
-    <Input
-      type="text"
-      value={prompt}
-      onChange={(e) => setPrompt(e.target.value)}
-      placeholder={placeholder}
-      required
-    />
-  );
 
   return (
     <Card className="w-full">
