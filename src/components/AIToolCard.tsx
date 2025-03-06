@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,7 +34,7 @@ const AIToolCard = ({
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState('');
   const [loading, setLoading] = useState(false);
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -79,15 +80,11 @@ const AIToolCard = ({
       });
 
       if (error) throw error;
-
+      
       setResult(data.result);
       
-      // Refresh the user profile to get updated credits
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+      // Refresh user profile to get the updated credit balance
+      await refreshProfile();
       
       toast({
         title: "Success!",
@@ -97,7 +94,7 @@ const AIToolCard = ({
       console.error('Error using AI tool:', error);
       toast({
         title: "Error",
-        description: "Failed to generate. Please try again.",
+        description: "Failed to generate. Your credits have not been deducted.",
         variant: "destructive",
       });
     } finally {
@@ -142,7 +139,7 @@ const AIToolCard = ({
           </div>
           <Button 
             type="submit" 
-            disabled={loading || !user}
+            disabled={loading || !user || (profile && profile.credits < creditCost)}
             className="w-full"
           >
             {loading ? (

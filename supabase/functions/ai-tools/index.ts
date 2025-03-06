@@ -3,6 +3,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL') || 'https://cqyyqhhafougprcnueek.supabase.co';
+const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -20,6 +22,33 @@ serve(async (req) => {
     
     if (!tool || !prompt || !userId) {
       throw new Error('Missing required parameters: tool, prompt, or userId');
+    }
+
+    // Check if user has enough credits first
+    const profileResponse = await fetch(
+      `${supabaseUrl}/rest/v1/profiles?id=eq.${userId}&select=credits`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseAnonKey || '',
+          'Authorization': `Bearer ${supabaseAnonKey || ''}`,
+        },
+      }
+    );
+    
+    if (!profileResponse.ok) {
+      throw new Error('Failed to fetch user profile');
+    }
+    
+    const profileData = await profileResponse.json();
+    
+    if (!profileData.length || profileData[0].credits < 10) {
+      return new Response(JSON.stringify({ 
+        error: 'Insufficient credits' 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     let systemPrompt = '';
@@ -41,6 +70,7 @@ serve(async (req) => {
 
     console.log(`Processing ${tool} request for user ${userId} with prompt: ${prompt}`);
 
+    // Call OpenAI API
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -67,25 +97,26 @@ serve(async (req) => {
     const data = await response.json();
     const result = data.choices[0].message.content;
 
-    // Deduct credits from the user's account - changed from 5 to 10 credits
-    const { error } = await fetch(
-      `https://cqyyqhhafougprcnueek.supabase.co/rest/v1/profiles?id=eq.${userId}`,
+    // Only deduct credits if the generation was successful
+    const updateResponse = await fetch(
+      `${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`,
       {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          'apikey': Deno.env.get('SUPABASE_ANON_KEY') || '',
-          'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY') || ''}`,
+          'apikey': supabaseAnonKey || '',
+          'Authorization': `Bearer ${supabaseAnonKey || ''}`,
           'Prefer': 'return=minimal',
         },
         body: JSON.stringify({
-          credits: -10,  // Deduct 10 credits instead of 5
+          credits: profileData[0].credits - 10, // Actual value, not relative
         }),
       }
     );
 
-    if (error) {
-      console.error('Error updating user credits:', error);
+    if (!updateResponse.ok) {
+      console.error('Error updating user credits:', await updateResponse.text());
+      throw new Error('Failed to update user credits');
     }
 
     return new Response(JSON.stringify({ result }), {
