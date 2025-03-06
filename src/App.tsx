@@ -13,7 +13,7 @@ import UpdatePassword from "./pages/UpdatePassword";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
-import BusinessNameGenerator from "./pages/BusinessNameGenerator";
+import BusinessNameGenerator from "./pages/business-name-generator";
 
 const queryClient = new QueryClient();
 

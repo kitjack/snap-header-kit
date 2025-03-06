@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { GENERATION_COST } from '../components/BusinessDescriptionForm';
+import { AlertCircle } from 'lucide-react';
 
 interface FormData {
   description: string;
