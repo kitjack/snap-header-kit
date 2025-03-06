@@ -19,7 +19,7 @@ const HeroSection = () => {
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
         {user ? (
           <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-medium px-8 py-6 rounded-lg">
-            <Link to="/ai-tools">
+            <Link to="/tool/business-name">
               <Sparkles className="mr-2 h-5 w-5" />
               Try AI Tools
             </Link>
