@@ -37,26 +37,6 @@ const AIToolCard = ({
   const { user, profile, refreshProfile } = useAuth();
   const { toast } = useToast();
 
-  // Generate response based on tool type
-  const generateResponse = (toolId: string, promptText: string) => {
-    // This is a simplified mock implementation
-    // In a real application, you'd integrate with actual AI APIs
-    
-    switch (toolId) {
-      case 'business-name':
-        return `Suggested business names based on "${promptText}":\n\n1. InnovateCraft\n2. PrimeVision Enterprises\n3. EcoSphere Solutions\n4. Zenith Dynamics\n5. QuantumLeap Industries`;
-      
-      case 'etsy-tags':
-        return `Recommended Etsy tags for "${promptText}":\n\n#handmade #craftedwithlove #customgift #uniquedesign #etsyfinds #specialgift #giftideas #homedecor #personalized #oneofakind`;
-      
-      case 'slogan':
-        return `Slogan ideas for "${promptText}":\n\n1. "Innovation That Inspires"\n2. "Building Tomorrow Today"\n3. "Excellence in Every Detail"\n4. "Your Vision, Our Mission"\n5. "Quality You Can Trust"`;
-      
-      default:
-        return `Generated content for "${promptText}"`;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -91,8 +71,15 @@ const AIToolCard = ({
     setResult('');
 
     try {
-      // First generate the result
-      const generatedResult = generateResponse(id, prompt);
+      // First call the edge function to generate content
+      const { data: aiResponse, error: aiError } = await supabase.functions.invoke('generate-ai-content', {
+        body: {
+          toolId: id,
+          prompt
+        }
+      });
+
+      if (aiError) throw aiError;
       
       // Then update the credits in the database
       const { data, error } = await supabase
@@ -106,7 +93,7 @@ const AIToolCard = ({
       if (error) throw error;
       
       // Set the result and refresh the profile to get updated credits
-      setResult(generatedResult);
+      setResult(aiResponse.result);
       await refreshProfile();
       
       toast({
@@ -158,7 +145,23 @@ const AIToolCard = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor={`prompt-${id}`}>{inputLabel}</Label>
-            {InputComponent}
+            {useTextarea ? (
+              <Textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder={placeholder}
+                className="resize-none h-24"
+                required
+              />
+            ) : (
+              <Input
+                type="text"
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                placeholder={placeholder}
+                required
+              />
+            )}
           </div>
           <Button 
             type="submit" 
