@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase, Tags, Type, Globe, Store, Zap, Linkedin, MessageSquare } from 'lucide-react';
+import { Briefcase, Tags, Type, Globe, Store, Zap, Linkedin, MessageSquare, GraduationCap } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -59,6 +59,12 @@ const Index = () => {
             description="Craft engaging bios for all your social profiles"
             icon={<MessageSquare className="text-primary" />}
             linkTo="/tools/social-media-bio-generator"
+          />
+          <ToolCard 
+            title="Academic Project Generator" 
+            description="Generate innovative academic project topics for your field"
+            icon={<GraduationCap className="text-primary" />}
+            linkTo="/tools/academic-project-generator"
           />
         </div>
       </div>
