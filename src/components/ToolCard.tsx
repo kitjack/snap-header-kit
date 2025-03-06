@@ -22,7 +22,7 @@ const ToolCard = ({ title, description, icon, linkTo }: ToolCardProps) => {
       <p className="text-muted-foreground mb-6">{description}</p>
       
       <Button asChild variant="outline" className="text-primary border-primary hover:bg-primary/10">
-        <Link to={linkTo}>Try Now</Link>
+        <Link to={linkTo}>Generate</Link>
       </Button>
     </div>
   );
