@@ -97,61 +97,85 @@ const BusinessNameGenerator = () => {
 
     setIsGenerating(true);
     
-    // Deduct credits before generating
-    const deductionSuccessful = await deductCredits();
-    if (!deductionSuccessful) {
-      setIsGenerating(false);
-      if (!insufficientCredits) {
+    try {
+      // Call the OpenAI function to generate names
+      const { data: generationData, error: generationError } = await supabase.functions.invoke(
+        'generate-business-names',
+        {
+          body: {
+            description: formData.description,
+            industry: formData.industry,
+            keywords: formData.keywords,
+            userId: user.id
+          }
+        }
+      );
+
+      if (generationError) {
+        console.error('Error calling function:', generationError);
         toast({
-          title: "Error",
-          description: "Failed to process credits. Please try again.",
+          title: "Generation Failed",
+          description: "Failed to generate business names. Please try again.",
           variant: "destructive",
         });
+        setIsGenerating(false);
+        return;
       }
-      return;
-    }
-    
-    // Simulate API call with a timeout
-    setTimeout(() => {
-      // Generate business names
-      const { description, industry, keywords } = formData;
-      const keywordsArray = keywords.split(',').map(k => k.trim()).filter(k => k);
-      
-      let mockNames = [
-        `${description} Solutions`,
-        `${description} Innovations`,
-        `${description} Enterprises`,
-        `${description} Global`,
-      ];
-      
-      // Add industry-based names if provided
-      if (industry) {
-        mockNames.push(`${industry} ${description}`);
-        mockNames.push(`${description} ${industry}`);
-      }
-      
-      // Add keyword-based names if provided
-      if (keywordsArray.length > 0) {
-        keywordsArray.forEach(keyword => {
-          mockNames.push(`${keyword} ${description}`);
+
+      // Make sure we have results
+      if (!generationData || !generationData.businessNames || generationData.businessNames.length === 0) {
+        toast({
+          title: "No Results",
+          description: "No business names were generated. Please try a different description.",
+          variant: "destructive",
         });
+        setIsGenerating(false);
+        return;
       }
-      
+
+      // We have successful results, now deduct credits
+      const deductionSuccessful = await deductCredits();
+      if (!deductionSuccessful) {
+        setIsGenerating(false);
+        if (!insufficientCredits) {
+          toast({
+            title: "Error",
+            description: "Failed to process credits. Please try again.",
+            variant: "destructive",
+          });
+        }
+        return;
+      }
+
       // Store result in database
-      if (user) {
-        supabase.from('ai_tool_results').insert({
-          user_id: user.id,
-          tool_id: 'business-name-generator',
-          prompt: JSON.stringify(formData),
-          result: JSON.stringify(mockNames)
-        }).then(({ error }) => {
-          if (error) console.error('Error saving result:', error);
-        });
+      const { error: saveError } = await supabase.from('ai_tool_results').insert({
+        user_id: user.id,
+        tool_id: 'business-name-generator',
+        prompt: JSON.stringify({
+          description: formData.description,
+          industry: formData.industry,
+          keywords: formData.keywords,
+          openAiPrompt: generationData.prompt
+        }),
+        result: JSON.stringify(generationData.businessNames)
+      });
+
+      if (saveError) {
+        console.error('Error saving result:', saveError);
       }
-      
-      setGeneratedNames(mockNames);
+
+      // Update UI with generated names
+      setGeneratedNames(generationData.businessNames);
+    } catch (error) {
+      console.error('Error in handleGenerate:', error);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsGenerating(false);
-    }, 1500);
+    }
   };
 
   const copyToClipboard = (text: string) => {
