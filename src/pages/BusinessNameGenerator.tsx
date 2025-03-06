@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Layout from '@/components/Layout';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
@@ -66,9 +67,6 @@ const BusinessNameGenerator = () => {
           <Card>
             <CardHeader>
               <CardTitle>Generate business names</CardTitle>
-              <CardDescription>
-                Describe your business and we'll generate creative name suggestions for you.
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <Textarea
@@ -81,7 +79,7 @@ const BusinessNameGenerator = () => {
               <Button 
                 onClick={handleGenerate} 
                 disabled={isGenerating || !prompt.trim()}
-                className="w-full"
+                className="w-full bg-teal-400 hover:bg-teal-500 text-white"
               >
                 {isGenerating ? (
                   <>
