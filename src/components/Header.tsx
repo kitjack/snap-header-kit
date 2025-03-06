@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
+import { Sparkles } from 'lucide-react';
 
 const Header = () => {
   const { user, profile, signOut } = useAuth();
@@ -24,6 +25,12 @@ const Header = () => {
             <div className="text-sm font-medium px-3 py-1 bg-secondary/10 text-secondary rounded-md">
               Credits: {profile?.credits || 0}
             </div>
+            <Button asChild variant="ghost" className="text-gray-700 hover:text-gray-900 hover:bg-gray-100">
+              <Link to="/ai-tools">
+                <Sparkles className="mr-2 h-4 w-4" />
+                AI Tools
+              </Link>
+            </Button>
             <Button asChild variant="ghost" className="bg-secondary hover:bg-secondary/90 text-white rounded-md px-6">
               <Link to="/profile">Profile</Link>
             </Button>

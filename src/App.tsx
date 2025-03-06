@@ -12,6 +12,7 @@ import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
+import AITools from "./pages/AITools";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/premium" element={<Premium />} />
+            <Route path="/ai-tools" element={<AITools />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
