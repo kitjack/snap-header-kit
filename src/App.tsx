@@ -12,7 +12,6 @@ import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
-import AITools from "./pages/AITools";
 import ToolPage from "./pages/ToolPage";
 import NotFound from "./pages/NotFound";
 
@@ -33,7 +32,6 @@ const App = () => (
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/premium" element={<Premium />} />
-            <Route path="/ai-tools" element={<AITools />} />
             <Route path="/tool/:toolId" element={<ToolPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
