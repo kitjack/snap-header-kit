@@ -15,6 +15,7 @@ import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import BusinessNameGenerator from "./pages/business-name-generator";
 import EtsyTagGenerator from "./pages/etsy-tag-generator";
+import SloganGenerator from "./pages/slogan-generator";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/premium" element={<Premium />} />
             <Route path="/tools/business-name-generator" element={<BusinessNameGenerator />} />
             <Route path="/tools/etsy-tag-generator" element={<EtsyTagGenerator />} />
+            <Route path="/tools/slogan-generator" element={<SloganGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
