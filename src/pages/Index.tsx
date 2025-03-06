@@ -1,13 +1,24 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
+import ToolCard from '@/components/ToolCard';
+import { Briefcase } from 'lucide-react';
 
 const Index = () => {
   return (
     <Layout>
       <HeroSection />
       <div className="flex-grow mt-12">
-        
+        <h2 className="text-2xl font-bold mb-6">Popular Tools</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ToolCard 
+            title="Business Name Generator" 
+            description="Generate creative and unique business names instantly"
+            icon={<Briefcase className="text-primary" />}
+            linkTo="/tools/business-name-generator"
+          />
+        </div>
       </div>
     </Layout>
   );
