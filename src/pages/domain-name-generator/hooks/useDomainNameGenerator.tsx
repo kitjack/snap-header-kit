@@ -29,7 +29,7 @@ export const useDomainNameGenerator = () => {
   const [error, setError] = useState<string | null>(null);
   const [insufficientCredits, setInsufficientCredits] = useState(false);
   const { toast } = useToast();
-  const { user, profile, updateUserProfile } = useAuth();
+  const { user, profile } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -102,15 +102,29 @@ export const useDomainNameGenerator = () => {
 
       setResults(data.domains);
 
-      // Deduct credits
+      // Deduct credits - using direct Supabase update instead of updateUserProfile
       if (profile) {
         const newCredits = profile.credits - GENERATION_COST;
-        await updateUserProfile({ credits: newCredits });
         
-        toast({
-          title: "Credits used",
-          description: `${GENERATION_COST} credits have been deducted from your account.`,
-        });
+        // Update the credits in the profiles table
+        const { error: updateError } = await supabase
+          .from('profiles')
+          .update({ credits: newCredits })
+          .eq('id', user.id);
+          
+        if (updateError) {
+          console.error('Error updating credits:', updateError);
+          toast({
+            title: "Error",
+            description: "Failed to update credits. Please refresh the page.",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Credits used",
+            description: `${GENERATION_COST} credits have been deducted from your account.`,
+          });
+        }
       }
     } catch (err) {
       console.error('Error generating domain names:', err);
