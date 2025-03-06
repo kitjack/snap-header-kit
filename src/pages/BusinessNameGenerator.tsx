@@ -4,17 +4,31 @@ import Layout from '@/components/Layout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Briefcase, Copy, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const BusinessNameGenerator = () => {
-  const [prompt, setPrompt] = useState('');
+  const [formData, setFormData] = useState({
+    description: '',
+    industry: '',
+    keywords: '',
+  });
   const [generatedNames, setGeneratedNames] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleGenerate = async () => {
-    if (!prompt.trim()) {
+    if (!formData.description.trim()) {
       toast({
         title: "Input required",
         description: "Please describe your business to generate names.",
@@ -28,16 +42,28 @@ const BusinessNameGenerator = () => {
     // Simulate API call with a timeout
     setTimeout(() => {
       // Mock data for demonstration
-      const mockNames = [
-        `${prompt} Solutions`,
-        `${prompt} Innovations`,
-        `${prompt} Enterprises`,
-        `${prompt} Global`,
-        `${prompt} Tech`,
-        `Next${prompt}`,
-        `${prompt} Wave`,
-        `${prompt} Hub`,
+      const { description, industry, keywords } = formData;
+      const keywordsArray = keywords.split(',').map(k => k.trim()).filter(k => k);
+      
+      let mockNames = [
+        `${description} Solutions`,
+        `${description} Innovations`,
+        `${description} Enterprises`,
+        `${description} Global`,
       ];
+      
+      // Add industry-based names if provided
+      if (industry) {
+        mockNames.push(`${industry} ${description}`);
+        mockNames.push(`${description} ${industry}`);
+      }
+      
+      // Add keyword-based names if provided
+      if (keywordsArray.length > 0) {
+        keywordsArray.forEach(keyword => {
+          mockNames.push(`${keyword} ${description}`);
+        });
+      }
       
       setGeneratedNames(mockNames);
       setIsGenerating(false);
@@ -65,18 +91,47 @@ const BusinessNameGenerator = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Input Section */}
           <Card className="border-0 shadow-sm">
-            <CardContent className="pt-6">
-              <Textarea
-                placeholder="Describe your business..."
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[150px] mb-4 resize-none focus-visible:ring-1"
-              />
+            <CardContent className="pt-6 space-y-4">
+              <div>
+                <Label htmlFor="description" className="mb-1.5 block">Business Description</Label>
+                <Textarea
+                  id="description"
+                  name="description"
+                  placeholder="What does your business do?"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="min-h-[100px] resize-none focus-visible:ring-1"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="industry" className="mb-1.5 block">Industry</Label>
+                <Input
+                  id="industry"
+                  name="industry"
+                  placeholder="Tech, Healthcare, Finance, etc."
+                  value={formData.industry}
+                  onChange={handleInputChange}
+                  className="focus-visible:ring-1"
+                />
+              </div>
+              
+              <div>
+                <Label htmlFor="keywords" className="mb-1.5 block">Keywords</Label>
+                <Input
+                  id="keywords"
+                  name="keywords"
+                  placeholder="Enter keywords, separated by commas"
+                  value={formData.keywords}
+                  onChange={handleInputChange}
+                  className="focus-visible:ring-1"
+                />
+              </div>
               
               <Button 
                 onClick={handleGenerate} 
-                disabled={isGenerating || !prompt.trim()}
-                className="w-full bg-teal-400 hover:bg-teal-500 text-white"
+                disabled={isGenerating || !formData.description.trim()}
+                className="w-full bg-teal-400 hover:bg-teal-500 text-white mt-2"
               >
                 {isGenerating ? (
                   <>
