@@ -4,6 +4,7 @@ import Layout from '@/components/Layout';
 import { useDomainNameGenerator } from './hooks/useDomainNameGenerator';
 import DomainNameForm from './components/DomainNameForm';
 import ResultsDisplay from './components/ResultsDisplay';
+import { useAuth } from '@/contexts/AuthContext';
 
 const DomainNameGenerator = () => {
   const {
@@ -14,8 +15,13 @@ const DomainNameGenerator = () => {
     handleInputChange,
     handleSelectChange,
     handleSubmit,
+    copyToClipboard,
+    renderCreditInfo,
+    insufficientCredits,
     resetForm
   } = useDomainNameGenerator();
+
+  const { user, profile } = useAuth();
 
   return (
     <Layout>
@@ -32,6 +38,10 @@ const DomainNameGenerator = () => {
             onChange={handleInputChange}
             onSelectChange={handleSelectChange}
             onSubmit={handleSubmit}
+            insufficientCredits={insufficientCredits}
+            renderCreditInfo={renderCreditInfo}
+            user={user}
+            profile={profile}
           />
 
           {results && (
@@ -39,6 +49,7 @@ const DomainNameGenerator = () => {
               results={results}
               isLoading={isLoading}
               onReset={resetForm}
+              onCopy={copyToClipboard}
             />
           )}
 
