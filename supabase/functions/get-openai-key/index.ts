@@ -15,6 +15,8 @@ serve(async (req) => {
   }
 
   try {
+    console.log("OpenAI API Key exists:", !!openAIApiKey);
+    
     // Return the API key
     return new Response(JSON.stringify({ apiKey: openAIApiKey }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

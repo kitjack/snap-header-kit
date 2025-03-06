@@ -72,12 +72,23 @@ const AIToolCard = ({
     setResult('');
 
     try {
-      // Get OpenAI API key from Supabase
-      const { data: apiKeyData, error: apiKeyError } = await supabase.functions.invoke('get-openai-key', {});
+      console.log("Starting generation with prompt:", prompt);
       
-      if (apiKeyError || !apiKeyData?.apiKey) {
-        throw new Error('Could not retrieve OpenAI API key');
+      // Get OpenAI API key from Supabase
+      console.log("Fetching OpenAI API key from edge function...");
+      const { data: apiKeyData, error: apiKeyError } = await supabase.functions.invoke('get-openai-key');
+      
+      console.log("API key response:", apiKeyData, apiKeyError);
+      
+      if (apiKeyError) {
+        throw new Error(`API key error: ${apiKeyError.message}`);
       }
+      
+      if (!apiKeyData?.apiKey) {
+        throw new Error('Could not retrieve OpenAI API key - key is null or undefined');
+      }
+      
+      console.log("OpenAI API key retrieved successfully");
       
       const openai = new OpenAI({
         apiKey: apiKeyData.apiKey,
@@ -104,6 +115,8 @@ const AIToolCard = ({
           systemMessage = "You are a helpful assistant. Provide a detailed and helpful response to the prompt.";
       }
 
+      console.log("Calling OpenAI with system message:", systemMessage);
+      
       // Call OpenAI API directly
       const response = await openai.chat.completions.create({
         model: 'gpt-4o-mini',
@@ -114,7 +127,10 @@ const AIToolCard = ({
         temperature: 0.7,
       });
 
+      console.log("OpenAI response received:", response);
+      
       const generatedText = response.choices[0].message.content || '';
+      console.log("Generated text:", generatedText);
       
       // Then update the credits in the database
       const { data, error } = await supabase
