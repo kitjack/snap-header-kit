@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, Tags } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -17,6 +17,12 @@ const Index = () => {
             description="Generate creative and unique business names instantly"
             icon={<Briefcase className="text-primary" />}
             linkTo="/tools/business-name-generator"
+          />
+          <ToolCard 
+            title="Etsy Tag Generator" 
+            description="Optimize your Etsy listings with perfect tags"
+            icon={<Tags className="text-primary" />}
+            linkTo="/tools/etsy-tag-generator"
           />
         </div>
       </div>

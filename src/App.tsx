@@ -14,6 +14,7 @@ import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
 import BusinessNameGenerator from "./pages/business-name-generator";
+import EtsyTagGenerator from "./pages/etsy-tag-generator";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/premium" element={<Premium />} />
             <Route path="/tools/business-name-generator" element={<BusinessNameGenerator />} />
+            <Route path="/tools/etsy-tag-generator" element={<EtsyTagGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
