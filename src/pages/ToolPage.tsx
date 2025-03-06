@@ -75,7 +75,7 @@ const ToolPage = () => {
           </p>
         </div>
 
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <AIToolCard
             id={tool.id}
             title={tool.title}
