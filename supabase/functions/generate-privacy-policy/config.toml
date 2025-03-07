@@ -1,0 +1,4 @@
+
+project_id = "cqyyqhhafougprcnueek"
+name = "generate-privacy-policy"
+entrypoint = "/index.ts"

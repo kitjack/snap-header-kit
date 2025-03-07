@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import ToolCard from '@/components/ToolCard';
 import HeroSection from '@/components/HeroSection';
-import { Sparkles, Lightbulb, FileText, Edit } from 'lucide-react';
+import { Sparkles, Lightbulb, FileText, Edit, Shield } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -26,6 +26,12 @@ const Index = () => {
             description="Create professional and engaging about pages for your business."
             href="/tools/about-page-generator"
             icon={Edit}
+          />
+          <ToolCard
+            title="Privacy Policy Generator"
+            description="Create compliant privacy policies for your website or app."
+            href="/tools/privacy-policy-generator"
+            icon={Shield}
           />
           <ToolCard
             title="Business Name Generator"
