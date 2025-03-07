@@ -10,24 +10,23 @@ export const GENERATION_COST = 10;
 
 interface FormData {
   topic: string;
-  industry: string;
-  tone: string;
-  content: string;
+  audience: string;
+  purpose: string;
 }
 
 export interface Newsletter {
   id: number;
-  subjectLine: string;
-  body: string;
-  designNotes: string;
+  subject: string;
+  content: string;
+  cta: string;
+  imageRecommendations: string;
 }
 
 export const useNewsletterGenerator = () => {
   const [formData, setFormData] = useState<FormData>({
     topic: '',
-    industry: '',
-    tone: 'professional',
-    content: '',
+    audience: '',
+    purpose: '',
   });
   const [results, setResults] = useState<Newsletter[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -48,10 +47,10 @@ export const useNewsletterGenerator = () => {
     e.preventDefault();
     
     // Validate inputs
-    if (!formData.topic) {
+    if (!formData.topic || !formData.audience || !formData.purpose) {
       toast({
         title: "Input required",
-        description: "Please enter a topic for your newsletter.",
+        description: "Please fill in all required fields.",
         variant: "destructive",
       });
       return;
@@ -83,16 +82,24 @@ export const useNewsletterGenerator = () => {
     setInsufficientCredits(false);
     
     try {
+      console.log("Calling generate-newsletters function with:", {
+        topic: formData.topic,
+        audience: formData.audience,
+        purpose: formData.purpose,
+        userId: user.id
+      });
+      
       // Call the Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('generate-newsletters', {
         body: {
           topic: formData.topic,
-          industry: formData.industry,
-          tone: formData.tone,
-          content: formData.content,
+          audience: formData.audience,
+          purpose: formData.purpose,
           userId: user.id
         }
       });
+
+      console.log("Edge function response:", data, error);
 
       if (error) {
         throw new Error(error.message);

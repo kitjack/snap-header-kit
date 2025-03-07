@@ -2,14 +2,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-const projectId = Deno.env.get('SUPABASE_PROJECT_ID');
-const supabaseUrl = Deno.env.get('SUPABASE_URL');
-const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
 serve(async (req) => {
@@ -19,135 +14,191 @@ serve(async (req) => {
   }
 
   try {
-    const { topic, industry, tone, content, userId } = await req.json();
-
-    // Validate inputs
-    if (!topic) {
-      return new Response(
-        JSON.stringify({ error: 'Missing required fields' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+    if (!openAIApiKey) {
+      throw new Error('OPENAI_API_KEY is not set');
     }
+
+    // Get request body
+    const { topic, audience, purpose, userId } = await req.json();
     
-    // Validate user ID
-    if (!userId) {
-      return new Response(
-        JSON.stringify({ error: 'User not authenticated' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    console.log("Generating newsletters for:", { topic, audience, purpose, userId });
+
+    // Check if required fields are provided
+    if (!topic || !audience || !purpose) {
+      throw new Error('Missing required fields: topic, audience, and purpose are required');
     }
 
-    console.log(`Generating newsletters for topic: ${topic}, industry: ${industry}, tone: ${tone}`);
-
-    // Generate newsletters using OpenAI with a simplified prompt
+    // Create prompt for OpenAI
     const prompt = `
-      Create 2 newsletter templates for the topic "${topic}" ${industry ? `in the ${industry} industry` : ''} with a ${tone || 'professional'} tone.
-      ${content ? `Key content to include: ${content}` : ''}
-      
-      For each newsletter, provide:
-      - Subject line (compelling, 50-60 characters)
-      - Body content (include introduction, main content sections with headings, and conclusion)
-      - Design notes (brief suggestions for layout, colors, or imagery)
+    Create exactly 2 newsletter templates with the following parameters:
+    - Topic: ${topic}
+    - Target Audience: ${audience}
+    - Purpose: ${purpose}
+
+    For each newsletter, provide:
+    1. A creative subject line (attention-grabbing, relevant to topic)
+    2. Complete newsletter content (introduction, main content, conclusion)
+    3. A call-to-action
+    4. Recommended images or graphics (description only)
+
+    Format them clearly as two distinct options.
     `;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    // Call OpenAI API
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
+        "Authorization": `Bearer ${openAIApiKey}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: "gpt-4o-mini",
         messages: [
-          { 
-            role: 'system', 
-            content: 'You are a newsletter expert. Return your response as two complete newsletter options.'
+          {
+            role: "system",
+            content: "You are an expert newsletter writer specializing in creating engaging, professional newsletters for various audiences and purposes."
           },
-          { role: 'user', content: prompt }
+          {
+            role: "user",
+            content: prompt
+          }
         ],
-        temperature: 0.7,
-        max_tokens: 1500,
       }),
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      console.error('OpenAI API error:', error);
-      throw new Error('Failed to generate newsletters');
-    }
-
     const data = await response.json();
-    console.log('OpenAI response received');
     
-    // Define fallback newsletters in case parsing fails
-    const fallbackNewsletters = [
-      {
-        id: 1,
-        subjectLine: `${topic} Newsletter: Latest Updates and Insights`,
-        body: `Dear Subscriber,\n\nWelcome to our ${topic} newsletter. Here are the latest updates and insights...\n\n[Main Content]\n\nThank you for reading,\nThe Team`,
-        designNotes: "Use a clean layout with brand colors and relevant imagery."
-      },
-      {
-        id: 2,
-        subjectLine: `Discover New Trends in ${topic}`,
-        body: `Hello,\n\nExcited to share the latest trends in ${topic} with you today...\n\n[Main Content]\n\nUntil next time,\nThe Team`,
-        designNotes: "Try a modern design with accent colors and section dividers."
-      }
-    ];
-    
-    let newsletters;
-    
-    try {
-      // Extract content from the OpenAI response
-      const content = data.choices[0].message.content;
-      console.log('Processing OpenAI response content');
-      
-      // Split the response into two separate newsletters
-      const newsletterSections = content.split(/Newsletter \d+:|Option \d+:|Template \d+:/i).filter(section => section.trim().length > 0);
-      
-      if (newsletterSections.length >= 2) {
-        newsletters = newsletterSections.slice(0, 2).map((section, index) => {
-          const subjectLineMatch = section.match(/Subject(?:\s*line)?:?\s*(.*?)(?:\n|$)/i);
-          const bodyMatch = section.match(/Body(?:\s*content)?:?\s*([\s\S]*?)(?=Design|$)/i);
-          const designMatch = section.match(/Design(?:\s*notes)?:?\s*([\s\S]*?)(?=\n\n|$)/i);
-          
-          return {
-            id: index + 1,
-            subjectLine: subjectLineMatch ? subjectLineMatch[1].trim() : `${topic} Newsletter`,
-            body: bodyMatch ? bodyMatch[1].trim() : `Newsletter content about ${topic}`,
-            designNotes: designMatch ? designMatch[1].trim() : "Use a clean, professional design."
-          };
-        });
-      } else {
-        console.error('Failed to parse newsletter sections from OpenAI response');
-        newsletters = fallbackNewsletters;
-      }
-    } catch (error) {
-      console.error('Error processing OpenAI response:', error);
-      newsletters = fallbackNewsletters;
+    if (data.error) {
+      throw new Error(`OpenAI API error: ${data.error.message}`);
     }
 
-    // Ensure we have exactly 2 newsletters
-    if (!Array.isArray(newsletters)) {
-      newsletters = fallbackNewsletters;
-    } else if (newsletters.length < 2) {
-      while (newsletters.length < 2) {
-        newsletters.push(fallbackNewsletters[newsletters.length]);
-      }
-    } else if (newsletters.length > 2) {
-      newsletters = newsletters.slice(0, 2);
-    }
+    // Extract and parse newsletters from the response
+    const content = data.choices[0].message.content;
+    
+    // Process the content to extract two distinct newsletters
+    const newsletters = parseNewsletters(content);
+    
+    console.log("Generated newsletters:", newsletters);
 
-    return new Response(
-      JSON.stringify({ newsletters }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ newsletters }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error('Error in generate-newsletters function:', error);
-    
+    console.error("Error generating newsletters:", error.message);
     return new Response(
-      JSON.stringify({ error: error.message || 'An error occurred while generating newsletters' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: error.message }),
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" }
+      }
     );
   }
 });
+
+// Helper function to parse the GPT response into structured newsletters
+function parseNewsletters(content: string) {
+  try {
+    // Split content to find separate newsletters
+    const sections = content.split(/NEWSLETTER\s*(\d+|TWO|ONE):|OPTION\s*(\d+|TWO|ONE):/i);
+    
+    // Filter out empty sections and process
+    const relevantSections = sections.filter(section => section.trim().length > 0);
+    
+    // Extract subject lines, content and other components
+    const newsletters = [];
+    let currentIndex = 0;
+    
+    while (currentIndex < relevantSections.length) {
+      // Skip the number/identifier parts
+      if (/^\d+$|^ONE$|^TWO$/i.test(relevantSections[currentIndex].trim())) {
+        currentIndex++;
+        continue;
+      }
+      
+      const text = relevantSections[currentIndex];
+      
+      // Extract subject line
+      const subjectMatch = text.match(/Subject(\s*Line)?:(.+?)(\n|$)/i);
+      const subject = subjectMatch ? subjectMatch[2].trim() : "Newsletter";
+      
+      // Extract content sections
+      const contentSections = [];
+      const contentMatches = text.match(/Content:|Main Content:|Body:/i);
+      
+      if (contentMatches) {
+        const contentStart = text.indexOf(contentMatches[0]) + contentMatches[0].length;
+        let contentEnd = text.length;
+        
+        // Find where content ends (at the next section)
+        const nextSectionMatch = text.slice(contentStart).match(/Call(\s*to|-)Action:|CTA:|Conclusion:|Recommended Images:/i);
+        if (nextSectionMatch) {
+          contentEnd = contentStart + text.slice(contentStart).indexOf(nextSectionMatch[0]);
+        }
+        
+        contentSections.push(text.slice(contentStart, contentEnd).trim());
+      } else {
+        // If no content markers, just take the entire text minus the subject line
+        contentSections.push(text.replace(/Subject(\s*Line)?:(.+?)(\n|$)/i, "").trim());
+      }
+      
+      // Extract call to action
+      const ctaMatch = text.match(/Call(\s*to|-)Action:|CTA:(.+?)(\n|$|Recommended)/i);
+      const cta = ctaMatch ? ctaMatch[2].trim() : "";
+      
+      // Extract image recommendations
+      const imageMatch = text.match(/Recommended Images:|Graphics:(.+?)(\n|$)/i);
+      const imageRecommendations = imageMatch ? imageMatch[1].trim() : "";
+      
+      newsletters.push({
+        id: newsletters.length + 1,
+        subject,
+        content: contentSections.join("\n\n"),
+        cta,
+        imageRecommendations
+      });
+      
+      currentIndex++;
+      
+      // Only process two newsletters
+      if (newsletters.length >= 2) break;
+    }
+    
+    // If we couldn't parse properly, create a fallback structure
+    if (newsletters.length === 0) {
+      const halfwayPoint = Math.floor(content.length / 2);
+      newsletters.push({
+        id: 1,
+        subject: "Newsletter Option 1",
+        content: content.substring(0, halfwayPoint).trim(),
+        cta: "",
+        imageRecommendations: ""
+      });
+      
+      if (content.length > halfwayPoint) {
+        newsletters.push({
+          id: 2,
+          subject: "Newsletter Option 2",
+          content: content.substring(halfwayPoint).trim(),
+          cta: "",
+          imageRecommendations: ""
+        });
+      }
+    }
+    
+    return newsletters;
+  } catch (e) {
+    console.error("Error parsing newsletters:", e);
+    
+    // Fallback in case parsing fails
+    return [
+      {
+        id: 1,
+        subject: "Generated Newsletter",
+        content: content,
+        cta: "",
+        imageRecommendations: ""
+      }
+    ];
+  }
+}

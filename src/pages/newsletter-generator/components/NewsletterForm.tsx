@@ -1,119 +1,110 @@
 
 import React from 'react';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Loader2, AlertCircle, Coins, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User } from '@supabase/supabase-js';
-import { Loader2 } from 'lucide-react';
+
+interface FormData {
+  topic: string;
+  audience: string;
+  purpose: string;
+}
 
 interface NewsletterFormProps {
-  formData: {
-    topic: string;
-    industry: string;
-    tone: string;
-    content: string;
-  };
+  formData: FormData;
   isLoading: boolean;
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-  handleSubmit: (e: React.FormEvent) => Promise<void>;
   insufficientCredits: boolean;
+  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  handleSubmit: (e: React.FormEvent) => void;
   renderCreditInfo: () => React.ReactNode;
-  user: User | null;
-  profile: { credits: number } | null;
+  user: any;
+  profile: any;
 }
 
 const NewsletterForm: React.FC<NewsletterFormProps> = ({
   formData,
   isLoading,
+  insufficientCredits,
   handleInputChange,
   handleSubmit,
-  insufficientCredits,
   renderCreditInfo,
   user,
   profile
 }) => {
+  const hasLowCredits = profile && profile.credits < 10;
+  
+  const handleSelectChange = (value: string, name: string) => {
+    const event = {
+      target: {
+        name,
+        value
+      }
+    } as React.ChangeEvent<HTMLSelectElement>;
+    
+    handleInputChange(event);
+  };
+  
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">Newsletter Generator</CardTitle>
-      </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+      <CardContent className="pt-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="topic">Newsletter Topic*</Label>
+            <Label htmlFor="topic">Newsletter Topic *</Label>
             <Input
               id="topic"
               name="topic"
-              placeholder="E.g., Industry trends, Monthly updates, Product announcements"
+              placeholder="e.g. Monthly company updates, Health tips, Industry news"
               value={formData.topic}
               onChange={handleInputChange}
-              disabled={isLoading}
               required
             />
           </div>
-
+          
           <div className="space-y-2">
-            <Label htmlFor="industry">Industry</Label>
+            <Label htmlFor="audience">Target Audience *</Label>
             <Input
-              id="industry"
-              name="industry"
-              placeholder="E.g., Technology, Healthcare, Finance"
-              value={formData.industry}
+              id="audience"
+              name="audience"
+              placeholder="e.g. Customers, Employees, Industry professionals"
+              value={formData.audience}
               onChange={handleInputChange}
-              disabled={isLoading}
+              required
             />
           </div>
-
+          
           <div className="space-y-2">
-            <Label htmlFor="tone">Tone</Label>
-            <Select
-              name="tone"
-              value={formData.tone}
-              onValueChange={(value) => {
-                handleInputChange({
-                  target: { name: 'tone', value }
-                } as React.ChangeEvent<HTMLSelectElement>);
-              }}
-              disabled={isLoading}
+            <Label htmlFor="purpose">Newsletter Purpose *</Label>
+            <Select 
+              name="purpose" 
+              value={formData.purpose} 
+              onValueChange={(value) => handleSelectChange(value, 'purpose')}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select tone" />
+                <SelectValue placeholder="Select newsletter purpose" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="professional">Professional</SelectItem>
-                <SelectItem value="casual">Casual</SelectItem>
-                <SelectItem value="friendly">Friendly</SelectItem>
-                <SelectItem value="authoritative">Authoritative</SelectItem>
-                <SelectItem value="enthusiastic">Enthusiastic</SelectItem>
+                <SelectItem value="inform">Inform & Educate</SelectItem>
+                <SelectItem value="engage">Engage & Build Community</SelectItem>
+                <SelectItem value="promote">Promote Products/Services</SelectItem>
+                <SelectItem value="update">Provide Updates</SelectItem>
+                <SelectItem value="nurture">Nurture Leads</SelectItem>
               </SelectContent>
             </Select>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="content">Key Content (Optional)</Label>
-            <Textarea
-              id="content"
-              name="content"
-              placeholder="Specific points or information you want to include in the newsletter"
-              value={formData.content}
-              onChange={handleInputChange}
-              disabled={isLoading}
-              rows={4}
-            />
-          </div>
-
-          <div className="text-sm">
+          
+          <div className="py-1">
             {renderCreditInfo()}
           </div>
-        </CardContent>
-        <CardFooter>
+          
           <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={isLoading || !formData.topic || !user || insufficientCredits}
+            type="submit"
+            disabled={isLoading || !user || !formData.topic || !formData.audience || !formData.purpose}
+            className="w-full bg-primary hover:bg-primary/90"
           >
             {isLoading ? (
               <>
@@ -121,11 +112,32 @@ const NewsletterForm: React.FC<NewsletterFormProps> = ({
                 Generating...
               </>
             ) : (
-              'Generate Newsletters'
+              <>
+                <Mail className="mr-2 h-4 w-4" />
+                Generate Newsletters
+              </>
             )}
           </Button>
-        </CardFooter>
-      </form>
+          
+          {hasLowCredits && (
+            <div className="mt-3">
+              <div className="flex items-center gap-1 text-sm text-destructive mb-2">
+                <AlertCircle className="h-4 w-4" />
+                <span>Insufficient credits for generation</span>
+              </div>
+              <Button 
+                asChild
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+              >
+                <Link to="/premium">
+                  <Coins className="mr-2 h-4 w-4" />
+                  Top Up Credits
+                </Link>
+              </Button>
+            </div>
+          )}
+        </form>
+      </CardContent>
     </Card>
   );
 };
