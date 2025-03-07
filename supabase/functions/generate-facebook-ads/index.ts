@@ -53,14 +53,6 @@ serve(async (req) => {
       3. Description (max 30 characters)
       4. Call to action button suggestion
       5. An image description that would work well for this ad
-      
-      Format the response as a JSON array with exactly 2 objects, each with the following properties:
-      - id: a number (1 or 2)
-      - headline: the headline text
-      - primaryText: the primary text
-      - description: the description text
-      - cta: suggested call to action button
-      - imageDescription: description of image that would work well
     `;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -72,7 +64,10 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
-          { role: 'system', content: 'You are a professional Facebook ads expert. Create compelling, concise Facebook ads that follow the platform\'s best practices.' },
+          { 
+            role: 'system', 
+            content: 'You are a professional Facebook ads expert. Create compelling, concise Facebook ads that follow the platform\'s best practices. Format your response as a valid JSON array with exactly 2 objects, using the keys: id, headline, primaryText, description, cta, imageDescription.' 
+          },
           { role: 'user', content: prompt }
         ],
         temperature: 0.7,
@@ -92,17 +87,61 @@ serve(async (req) => {
     try {
       // Parse the response from OpenAI which should be a JSON string within the content
       const content = data.choices[0].message.content;
-      adOptions = JSON.parse(content);
+      console.log('OpenAI response content:', content);
+      
+      // Attempt to parse the JSON
+      try {
+        adOptions = JSON.parse(content);
+      } catch (parseError) {
+        console.error('Error parsing content as JSON directly:', parseError);
+        
+        // Try to extract JSON from the content if it contains additional text
+        const jsonMatch = content.match(/\[\s*\{.*\}\s*\]/s);
+        if (jsonMatch) {
+          try {
+            adOptions = JSON.parse(jsonMatch[0]);
+          } catch (extractError) {
+            console.error('Error parsing extracted JSON:', extractError);
+            throw new Error('Could not extract valid JSON from response');
+          }
+        } else {
+          throw new Error('No JSON array found in response');
+        }
+      }
       
       // Ensure we have exactly 2 ad options
       if (!Array.isArray(adOptions) || adOptions.length !== 2) {
-        throw new Error('Invalid response format');
+        console.error('Invalid response format, expected array of 2 items, got:', adOptions);
+        
+        // Attempt to format the response if it's not properly formatted
+        if (Array.isArray(adOptions) && adOptions.length > 0) {
+          // Take just the first 2 items if there are more
+          adOptions = adOptions.slice(0, 2);
+          
+          // If we have less than 2, duplicate the first one
+          if (adOptions.length === 1) {
+            adOptions.push({...adOptions[0], id: 2});
+          }
+        } else {
+          throw new Error('Invalid response format');
+        }
       }
+      
+      // Validate each ad option has required fields
+      adOptions = adOptions.map((ad, index) => {
+        return {
+          id: ad.id || index + 1,
+          headline: ad.headline || "Compelling Offer",
+          primaryText: ad.primaryText || "Check out our amazing product that solves your problems.",
+          description: ad.description || "Limited time offer",
+          cta: ad.cta || "Learn More",
+          imageDescription: ad.imageDescription || "Professional image related to the business",
+        };
+      });
+      
     } catch (error) {
       console.error('Error parsing OpenAI response:', error);
       console.log('OpenAI response:', data.choices[0].message.content);
-      
-      // Fallback formatting if the response isn't valid JSON
       throw new Error('Failed to parse Facebook ads from OpenAI response');
     }
 
