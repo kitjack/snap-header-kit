@@ -2,12 +2,17 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import ToolCard from '@/components/ToolCard';
+import HeroSection from '@/components/HeroSection';
 import { Sparkles, Lightbulb } from 'lucide-react';
 
 const Index = () => {
   return (
     <Layout>
       <div className="container mx-auto px-4 py-8">
+        <div className="mb-12">
+          <HeroSection />
+        </div>
+        
         <div className="text-center mb-12">
           <h1 className="text-3xl font-bold text-primary mb-4">AI-Powered Tools</h1>
           <p className="text-muted-foreground text-lg">
