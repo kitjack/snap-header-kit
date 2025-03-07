@@ -64,6 +64,60 @@ const BusinessNameGenerator = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Information Sections */}
+        <div className="mt-12 space-y-6">
+          <div className="bg-[#F2FCE2] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">What is a Business Name Generator?</h2>
+            <p className="text-gray-700">
+              A Business Name Generator is an AI-powered tool that creates unique, catchy, and memorable name suggestions for your business. It combines creativity with relevance to help entrepreneurs find the perfect name that resonates with their brand identity and target audience. Our generator uses advanced AI to analyze your business description, industry, and keywords to produce names that are both original and aligned with your business goals.
+            </p>
+          </div>
+          
+          <div className="bg-[#FEF7CD] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">Using It</h2>
+            <p className="text-gray-700">
+              To get started, simply describe your business in the text area provided. Include what your business does, its values, and its unique selling points. For better results, specify your industry and add relevant keywords that you'd like to see reflected in your business name. Click "Generate Names" and our AI will create a list of potential business names for you to choose from. You can copy any name that appeals to you with a single click.
+            </p>
+          </div>
+          
+          <div className="bg-[#FDE1D3] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">Tips</h2>
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li>Be specific in your business description to get more relevant name suggestions</li>
+              <li>Include your target audience or market in your description</li>
+              <li>Add keywords that reflect your brand's personality and values</li>
+              <li>Try multiple generations with slightly different inputs to get a wider variety of options</li>
+              <li>Consider names that are easy to spell, pronounce, and remember</li>
+              <li>Check domain availability for any business name you're seriously considering</li>
+            </ul>
+          </div>
+          
+          <div className="bg-[#D3E4FD] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">FAQ</h2>
+            <div className="space-y-3">
+              <div>
+                <h3 className="font-medium">How many business names can I generate?</h3>
+                <p className="text-gray-700">You can generate multiple sets of business names based on your available credits. Each generation typically produces 10 unique name suggestions.</p>
+              </div>
+              <div>
+                <h3 className="font-medium">Are the generated business names already taken?</h3>
+                <p className="text-gray-700">Our generator creates original name suggestions, but we recommend checking availability before finalizing your choice. This includes trademark searches and domain availability checks.</p>
+              </div>
+              <div>
+                <h3 className="font-medium">Can I customize the types of names generated?</h3>
+                <p className="text-gray-700">Yes, by adjusting your business description, industry selection, and keywords, you can influence the style and direction of the generated names.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-[#E5DEFF] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">Privacy</h2>
+            <p className="text-gray-700">
+              We take your privacy seriously. The business information you provide is used solely for generating name suggestions and is not shared with third parties. Your generated business names are private to your account. We do not claim ownership of any names generated and you are free to use them for your business ventures. For more details, please refer to our full Privacy Policy.
+            </p>
+          </div>
+        </div>
       </div>
     </Layout>
   );
