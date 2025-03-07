@@ -139,6 +139,13 @@ const Index = () => {
             icon={<MessageSquare className="text-primary" />}
             linkTo="/tools/facebook-ads-generator"
           />
+          
+          <ToolCard 
+            title="Google Ads Generator" 
+            description="Create compelling Google ads that engage your target audience and drive conversions."
+            icon={<MessageSquare className="text-primary" />}
+            linkTo="/tools/google-ads-generator"
+          />
         </div>
       </div>
     </Layout>
