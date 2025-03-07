@@ -2,14 +2,14 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   return (
     <div className="min-h-screen flex flex-col">

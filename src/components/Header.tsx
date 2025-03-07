@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { useAuth } from '@/contexts/AuthContext';
 import { Menu, X } from 'lucide-react';
-import { useMobile } from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Header = () => {
   const { user, profile, signOut } = useAuth();
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleSignOut = async () => {
