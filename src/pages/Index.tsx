@@ -1,122 +1,197 @@
 
 import React from 'react';
 import Layout from '@/components/Layout';
-import ToolCard from '@/components/ToolCard';
-import { Sparkles } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import ToolCard from './index/components/ToolCard';
+import { 
+  Type, 
+  Tag, 
+  MessageSquare, 
+  Globe, 
+  Store, 
+  Zap, 
+  Linkedin, 
+  Users, 
+  Lightbulb, 
+  BookOpen, 
+  Quote, 
+  FileText, 
+  Dumbbell,
+  Utensils, 
+  Facebook, 
+  Search, 
+  Mail,
+  Map
+} from 'lucide-react';
 
 const Index = () => {
+  const { user } = useAuth();
+
   return (
     <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-12">
-          <h1 className="text-3xl font-bold text-primary mb-4">AI-Powered Tools</h1>
-          <p className="text-muted-foreground text-lg">
-            Supercharge your productivity with our suite of AI tools.
-          </p>
-        </div>
+      <div className="text-center max-w-4xl mx-auto px-4 py-12">
+        <h1 className="text-4xl font-bold mb-4">
+          AI Tools for Content Generation
+        </h1>
+        <p className="text-xl text-gray-600 mb-8">
+          Create high-quality content in seconds with our collection of AI-powered tools
+        </p>
+        
+        {!user && (
+          <div className="flex justify-center space-x-4 mb-12">
+            <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-white">
+              <Link to="/login">Login</Link>
+            </Button>
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-white">
+              <Link to="/register">Get Started for Free</Link>
+            </Button>
+          </div>
+        )}
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="container mx-auto px-4 pb-12">
+        <h2 className="text-2xl font-bold mb-6">Popular Tools</h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <ToolCard
             title="Business Name Generator"
-            description="Generate creative business names."
+            description="Generate creative and memorable business names for your startup or company."
+            icon={Type}
             href="/tools/business-name-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Etsy Tag Generator"
-            description="Generate optimized Etsy tags for your products."
+            description="Create optimized tags for your Etsy listings to improve visibility and sales."
+            icon={Tag}
             href="/tools/etsy-tag-generator"
-            icon={Sparkles}
           />
-          <ToolCard
-            title="Slogan Generator"
-            description="Create catchy slogans for your brand."
-            href="/tools/slogan-generator"
-            icon={Sparkles}
-          />
+          
           <ToolCard
             title="Domain Name Generator"
-            description="Find available domain names for your business."
+            description="Discover available and catchy domain names for your website or business."
+            icon={Globe}
             href="/tools/domain-name-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
-            title="Etsy Shop Name Generator"
-            description="Generate unique Etsy shop names."
-            href="/tools/etsy-shop-name-generator"
-            icon={Sparkles}
+            title="Slogan Generator"
+            description="Create catchy, memorable slogans and taglines for your brand or business."
+            icon={MessageSquare}
+            href="/tools/slogan-generator"
           />
-          <ToolCard
-            title="Prompt Enhancer"
-            description="Enhance your prompts for better AI results."
-            href="/tools/prompt-enhancer"
-            icon={Sparkles}
-          />
+          
           <ToolCard
             title="LinkedIn Bio Generator"
-            description="Generate professional LinkedIn bios."
+            description="Create a professional and engaging LinkedIn profile biography."
+            icon={Linkedin}
             href="/tools/linkedin-bio-generator"
-            icon={Sparkles}
           />
+          
+          <ToolCard
+            title="Etsy Shop Name Generator"
+            description="Generate unique and appealing shop names for your Etsy store."
+            icon={Store}
+            href="/tools/etsy-shop-name-generator"
+          />
+          
+          <ToolCard
+            title="Prompt Enhancer"
+            description="Improve your AI prompts to get better results from AI tools and chatbots."
+            icon={Zap}
+            href="/tools/prompt-enhancer"
+          />
+          
+          <ToolCard
+            title="Travel Itinerary Generator"
+            description="Create personalized travel plans with daily activities, accommodations, and budget estimates."
+            icon={Map}
+            href="/tools/travel-itinerary-generator"
+            isNew={true}
+          />
+        </div>
+
+        <h2 className="text-2xl font-bold mt-12 mb-6">All Tools</h2>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           <ToolCard
             title="Social Media Bio Generator"
-            description="Generate engaging social media bios."
+            description="Create engaging bios for your social media profiles."
+            icon={Users}
             href="/tools/social-media-bio-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Academic Project Generator"
-            description="Generate innovative academic project ideas."
+            description="Generate research project ideas for academic assignments and papers."
+            icon={Lightbulb}
             href="/tools/academic-project-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Short Poem Generator"
-            description="Generate beautiful short poems."
+            description="Create beautiful poems on any topic in various styles."
+            icon={BookOpen}
             href="/tools/short-poem-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Quote Generator"
-            description="Generate inspirational quotes."
+            description="Generate inspiring quotes and sayings for any occasion."
+            icon={Quote}
             href="/tools/quote-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Horror Story Generator"
-            description="Generate spooky horror stories."
+            description="Create spine-chilling short horror stories with a single prompt."
+            icon={FileText}
             href="/tools/horror-story-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Workout Routine Generator"
-            description="Generate personalized workout routines."
+            description="Create personalized workout plans based on your fitness goals."
+            icon={Dumbbell}
             href="/tools/workout-routine-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Diet Meal Plan Generator"
-            description="Generate customized diet meal plans."
+            description="Generate healthy meal plans tailored to your dietary preferences."
+            icon={Utensils}
             href="/tools/diet-meal-plan-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Facebook Ads Generator"
-            description="Generate effective Facebook ad copy."
+            description="Create compelling Facebook ad copy that converts."
+            icon={Facebook}
             href="/tools/facebook-ads-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Google Ads Generator"
-            description="Generate compelling Google ad copy."
+            description="Generate effective Google Ads copy to improve your PPC campaigns."
+            icon={Search}
             href="/tools/google-ads-generator"
-            icon={Sparkles}
           />
+          
           <ToolCard
             title="Newsletter Generator"
-            description="Generate professional newsletters."
+            description="Create engaging newsletters for your email marketing campaigns."
+            icon={Mail}
             href="/tools/newsletter-generator"
-            icon={Sparkles}
+          />
+          
+          <ToolCard
+            title="Travel Itinerary Generator"
+            description="Create personalized travel plans with daily activities, accommodations, and budget estimates."
+            icon={Map}
+            href="/tools/travel-itinerary-generator"
+            isNew={true}
           />
         </div>
       </div>
