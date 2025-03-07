@@ -1,23 +1,25 @@
 
 import React from 'react';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface ToolCardProps {
   title: string;
   description: string;
-  icon?: React.ReactNode;
-  linkTo: string;
+  icon?: LucideIcon;
+  href: string;
 }
 
-const ToolCard = ({ title, description, icon, linkTo }: ToolCardProps) => {
+const ToolCard = ({ title, description, icon: Icon, href }: ToolCardProps) => {
+  const IconComponent = Icon || Briefcase;
+  
   return (
     <Link 
-      to={linkTo} 
+      to={href} 
       className="block bg-accent/50 p-6 rounded-xl transition-all hover:bg-accent/70"
     >
       <div className="bg-accent w-12 h-12 rounded-full flex items-center justify-center mb-4">
-        {icon || <Briefcase className="text-primary" />}
+        <IconComponent className="text-primary" />
       </div>
       
       <h3 className="text-xl font-bold mb-2">{title}</h3>
