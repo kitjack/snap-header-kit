@@ -1,0 +1,4 @@
+
+project_id = "cqyyqhhafougprcnueek"
+name = "generate-about-page"
+entrypoint = "/index.ts"

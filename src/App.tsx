@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -36,6 +35,7 @@ import GoogleAdsGenerator from "./pages/google-ads-generator";
 import NewsletterGenerator from "./pages/newsletter-generator";
 import ProjectTopicGenerator from "./pages/project-topic-generator";
 import CoverLetterGenerator from "./pages/cover-letter-generator";
+import AboutPageGenerator from './pages/about-page-generator';
 
 const queryClient = new QueryClient();
 
@@ -77,6 +77,7 @@ const App = () => (
             <Route path="/tools/newsletter-generator" element={<NewsletterGenerator />} />
             <Route path="/tools/project-topic-generator" element={<ProjectTopicGenerator />} />
             <Route path="/tools/cover-letter-generator" element={<CoverLetterGenerator />} />
+            <Route path="/tools/about-page-generator" element={<AboutPageGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
