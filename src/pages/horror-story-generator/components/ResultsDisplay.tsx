@@ -37,11 +37,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
       <div className="space-y-4">
         {results.map((story) => (
-          <Card key={story.id} className="overflow-hidden border">
-            <CardContent className="p-4">
-              <div className="space-y-2">
+          <Card key={story.id} className="overflow-hidden border shadow hover:shadow-md transition-shadow">
+            <CardContent className="p-6">
+              <div className="space-y-4">
                 <div className="flex items-start justify-between">
-                  <h3 className="text-lg font-semibold text-primary">{story.title}</h3>
+                  <h3 className="text-xl font-semibold text-primary">{story.title}</h3>
                   <Button 
                     variant="ghost" 
                     size="sm"
@@ -51,7 +51,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                   </Button>
                 </div>
                 
-                <p className="text-sm text-muted-foreground whitespace-pre-line">
+                <p className="text-md text-muted-foreground whitespace-pre-line leading-relaxed">
                   {story.content}
                 </p>
 
