@@ -1,8 +1,9 @@
+
 import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase, Tags, Type, Globe, Store, Zap, Linkedin, MessageSquare, GraduationCap, ShoppingBag, Feather } from 'lucide-react';
+import { Briefcase, Tags, Type, Globe, Store, Zap, Linkedin, MessageSquare, GraduationCap, ShoppingBag, Feather, Quote } from 'lucide-react';
 
 const tools = [
   {
@@ -44,7 +45,7 @@ const tools = [
   {
     title: "LinkedIn Bio Generator",
     description: "Create professional and compelling LinkedIn bios that highlight your expertise and career achievements.",
-    icon: <Briefcase className="text-primary" />,
+    icon: <Linkedin className="text-primary" />,
     linkTo: "/tools/linkedin-bio-generator"
   },
   {
@@ -64,6 +65,12 @@ const tools = [
     description: "Create beautiful, meaningful poems on any topic in a variety of styles - perfect for personal reflection or sharing.",
     icon: <Feather className="text-primary" />,
     linkTo: "/tools/short-poem-generator"
+  },
+  {
+    title: "Quote Generator",
+    description: "Generate inspirational, thought-provoking quotes on any topic for social media, presentations, or personal motivation.",
+    icon: <Quote className="text-primary" />,
+    linkTo: "/tools/quote-generator"
   }
 ];
 
