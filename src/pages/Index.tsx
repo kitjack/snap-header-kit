@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import ToolCard from '@/components/ToolCard';
 import HeroSection from '@/components/HeroSection';
-import { Sparkles, Lightbulb, FileText } from 'lucide-react';
+import { Sparkles, Lightbulb, FileText, Edit } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -21,6 +21,12 @@ const Index = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ToolCard
+            title="About Page Generator"
+            description="Create professional and engaging about pages for your business."
+            href="/tools/about-page-generator"
+            icon={Edit}
+          />
           <ToolCard
             title="Business Name Generator"
             description="Generate creative business names."
