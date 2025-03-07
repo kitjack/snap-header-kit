@@ -38,6 +38,7 @@ import ProjectTopicGenerator from "./pages/project-topic-generator";
 import CoverLetterGenerator from "./pages/cover-letter-generator";
 import AboutPageGenerator from './pages/about-page-generator';
 import PrivacyPolicyGenerator from './pages/privacy-policy-generator';
+import RefundPolicyGenerator from './pages/refund-policy-generator';
 
 const queryClient = new QueryClient();
 
@@ -81,6 +82,7 @@ const App = () => (
             <Route path="/tools/cover-letter-generator" element={<CoverLetterGenerator />} />
             <Route path="/tools/about-page-generator" element={<AboutPageGenerator />} />
             <Route path="/tools/privacy-policy-generator" element={<PrivacyPolicyGenerator />} />
+            <Route path="/tools/refund-policy-generator" element={<RefundPolicyGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
