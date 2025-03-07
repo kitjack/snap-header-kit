@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import AuthRequiredNotice from '@/components/AuthRequiredNotice';
 
 interface FormData {
   businessDescription: string;
@@ -172,7 +173,7 @@ export const useSloganGenerator = () => {
   };
 
   const renderCreditInfo = () => {
-    if (!user) return <div className="text-sm text-amber-600">Login to generate slogans</div>;
+    if (!user) return <AuthRequiredNotice />;
     
     if (insufficientCredits) {
       return (

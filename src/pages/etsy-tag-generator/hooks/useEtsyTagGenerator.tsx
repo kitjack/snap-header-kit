@@ -1,8 +1,11 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import AuthRequiredNotice from '@/components/AuthRequiredNotice';
+import { AlertCircle } from 'lucide-react';
+
+export const GENERATION_COST = 10;
 
 interface FormData {
   productDescription: string;
@@ -21,8 +24,9 @@ export const useEtsyTagGenerator = () => {
   const [results, setResults] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [insufficientCredits, setInsufficientCredits] = useState(false);
   const { toast } = useToast();
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -35,12 +39,10 @@ export const useEtsyTagGenerator = () => {
     setError(null);
 
     try {
-      // Check if user has enough credits (if authenticated)
-      if (profile && profile.credits < 10) {
+      if (profile && profile.credits < GENERATION_COST) {
         throw new Error('You need at least 10 credits to generate tags. Please upgrade to premium.');
       }
 
-      // Call the Supabase Edge Function
       const { data, error: functionError } = await supabase.functions.invoke('generate-etsy-tags', {
         body: {
           productDescription: formData.productDescription,
@@ -59,11 +61,10 @@ export const useEtsyTagGenerator = () => {
 
       setResults(data.tags);
       
-      // Deduct credits if user is authenticated
       if (profile) {
         const { error: updateError } = await supabase
           .from('profiles')
-          .update({ credits: profile.credits - 10 })
+          .update({ credits: profile.credits - GENERATION_COST })
           .eq('id', profile.id);
           
         if (updateError) {
@@ -94,6 +95,26 @@ export const useEtsyTagGenerator = () => {
     setResults(null);
   };
 
+  const renderCreditInfo = () => {
+    if (!user) return <AuthRequiredNotice />;
+    
+    if (insufficientCredits) {
+      return (
+        <div className="flex items-center gap-1 text-sm text-destructive">
+          <AlertCircle className="h-4 w-4" />
+          <span>Insufficient credits</span>
+        </div>
+      );
+    }
+    
+    return (
+      <div className="text-sm text-muted-foreground">
+        Cost: <span className="font-semibold text-secondary">{GENERATION_COST} credits</span> | 
+        Available: <span className="font-semibold text-secondary">{profile?.credits || 0} credits</span>
+      </div>
+    );
+  };
+
   return {
     formData,
     results,
@@ -101,6 +122,8 @@ export const useEtsyTagGenerator = () => {
     error,
     handleInputChange,
     handleSubmit,
-    resetForm
+    resetForm,
+    renderCreditInfo,
+    insufficientCredits
   };
 };

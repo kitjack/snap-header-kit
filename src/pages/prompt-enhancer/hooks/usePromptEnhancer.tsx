@@ -1,9 +1,9 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { AlertCircle } from 'lucide-react';
+import AuthRequiredNotice from '@/components/AuthRequiredNotice';
 
 // Cost per generation in credits
 export const GENERATION_COST = 10;
@@ -178,7 +178,7 @@ export const usePromptEnhancer = () => {
   };
 
   const renderCreditInfo = () => {
-    if (!user) return <div className="text-sm text-amber-600">Login to enhance prompts</div>;
+    if (!user) return <AuthRequiredNotice />;
     
     if (insufficientCredits) {
       return (

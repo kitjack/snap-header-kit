@@ -1,13 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { GENERATION_COST } from '../components/BusinessDescriptionForm';
 import { AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import AuthRequiredNotice from '@/components/AuthRequiredNotice';
 
 interface FormData {
   description: string;
@@ -28,7 +25,6 @@ export const useBusinessNameGenerator = () => {
   const { user, profile, loading } = useAuth();
 
   useEffect(() => {
-    // Reset insufficient credits state when profile changes
     if (profile && profile.credits >= GENERATION_COST) {
       setInsufficientCredits(false);
     }
@@ -46,13 +42,11 @@ export const useBusinessNameGenerator = () => {
     if (!user) return false;
     
     try {
-      // Check if user has enough credits
       if (!profile || profile.credits < GENERATION_COST) {
         setInsufficientCredits(true);
         return false;
       }
 
-      // Update credits in database
       const { error } = await supabase
         .from('profiles')
         .update({ credits: profile.credits - GENERATION_COST })
@@ -68,7 +62,6 @@ export const useBusinessNameGenerator = () => {
         return false;
       }
 
-      // Success
       return true;
     } catch (error) {
       console.error('Error in deductCredits:', error);
@@ -86,7 +79,6 @@ export const useBusinessNameGenerator = () => {
       return;
     }
 
-    // Check if user is logged in
     if (!user) {
       toast({
         title: "Login required",
@@ -99,7 +91,6 @@ export const useBusinessNameGenerator = () => {
     setIsGenerating(true);
     
     try {
-      // Call the OpenAI function to generate names
       const { data: generationData, error: generationError } = await supabase.functions.invoke(
         'generate-business-names',
         {
@@ -123,7 +114,6 @@ export const useBusinessNameGenerator = () => {
         return;
       }
 
-      // Make sure we have results
       if (!generationData || !generationData.businessNames || generationData.businessNames.length === 0) {
         toast({
           title: "No Results",
@@ -134,7 +124,6 @@ export const useBusinessNameGenerator = () => {
         return;
       }
 
-      // We have successful results, now deduct credits
       const deductionSuccessful = await deductCredits();
       if (!deductionSuccessful) {
         setIsGenerating(false);
@@ -148,7 +137,6 @@ export const useBusinessNameGenerator = () => {
         return;
       }
 
-      // Store result in database
       const { error: saveError } = await supabase.from('ai_tool_results').insert({
         user_id: user.id,
         tool_id: 'business-name-generator',
@@ -165,7 +153,6 @@ export const useBusinessNameGenerator = () => {
         console.error('Error saving result:', saveError);
       }
 
-      // Update UI with generated names
       setGeneratedNames(generationData.businessNames);
     } catch (error) {
       console.error('Error in handleGenerate:', error);
@@ -190,23 +177,7 @@ export const useBusinessNameGenerator = () => {
   const renderCreditInfo = () => {
     if (loading) return <div className="text-sm text-muted-foreground">Loading credits...</div>;
     
-    if (!user) return (
-      <div className="space-y-2">
-        <Alert variant="destructive" className="py-2 border-2 border-[#ea384c]">
-          <AlertDescription className="text-sm font-medium">
-            You must be logged in to generate contents
-          </AlertDescription>
-        </Alert>
-        <div className="flex space-x-2">
-          <Button asChild variant="outline" size="sm" className="bg-secondary hover:bg-secondary/90 text-white">
-            <Link to="/login">Login</Link>
-          </Button>
-          <Button asChild variant="outline" size="sm" className="bg-primary hover:bg-primary/90 text-white">
-            <Link to="/register">Register</Link>
-          </Button>
-        </div>
-      </div>
-    );
+    if (!user) return <AuthRequiredNotice />;
     
     if (insufficientCredits) {
       return (
