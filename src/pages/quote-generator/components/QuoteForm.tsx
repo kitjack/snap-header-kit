@@ -72,7 +72,6 @@ const QuoteForm: React.FC<QuoteFormProps> = ({
                 <SelectValue placeholder="Select a style (optional)" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Any style</SelectItem>
                 <SelectItem value="inspirational">Inspirational</SelectItem>
                 <SelectItem value="motivational">Motivational</SelectItem>
                 <SelectItem value="philosophical">Philosophical</SelectItem>
