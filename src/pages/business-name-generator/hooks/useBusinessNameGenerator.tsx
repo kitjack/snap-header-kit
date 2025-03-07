@@ -7,6 +7,7 @@ import { GENERATION_COST } from '../components/BusinessDescriptionForm';
 import { AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface FormData {
   description: string;
@@ -190,13 +191,20 @@ export const useBusinessNameGenerator = () => {
     if (loading) return <div className="text-sm text-muted-foreground">Loading credits...</div>;
     
     if (!user) return (
-      <div className="flex space-x-2">
-        <Button asChild variant="outline" size="sm" className="bg-secondary hover:bg-secondary/90 text-white">
-          <Link to="/login">Login</Link>
-        </Button>
-        <Button asChild variant="outline" size="sm" className="bg-primary hover:bg-primary/90 text-white">
-          <Link to="/register">Register</Link>
-        </Button>
+      <div className="space-y-2">
+        <Alert variant="destructive" className="py-2 border-2 border-[#ea384c]">
+          <AlertDescription className="text-sm font-medium">
+            You must be logged in to generate contents
+          </AlertDescription>
+        </Alert>
+        <div className="flex space-x-2">
+          <Button asChild variant="outline" size="sm" className="bg-secondary hover:bg-secondary/90 text-white">
+            <Link to="/login">Login</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="bg-primary hover:bg-primary/90 text-white">
+            <Link to="/register">Register</Link>
+          </Button>
+        </div>
       </div>
     );
     
