@@ -65,8 +65,6 @@ const Footer = () => {
               <li><Link to="/tools/slogan-generator" className="text-gray-600 hover:text-primary text-sm">Slogan Generator</Link></li>
               <li><Link to="/tools/domain-name-generator" className="text-gray-600 hover:text-primary text-sm">Domain Name Generator</Link></li>
               <li><Link to="/tools/etsy-shop-name-generator" className="text-gray-600 hover:text-primary text-sm">Etsy Shop Name Generator</Link></li>
-              <li><Link to="/tools/facebook-ads-generator" className="text-gray-600 hover:text-primary text-sm">Facebook Ads Generator</Link></li>
-              <li><Link to="/tools/google-ads-generator" className="text-gray-600 hover:text-primary text-sm">Google Ads Generator</Link></li>
             </ul>
           </div>
 
@@ -76,7 +74,6 @@ const Footer = () => {
             <ul className="space-y-2">
               <li><Link to="/tools/linkedin-bio-generator" className="text-gray-600 hover:text-primary text-sm">LinkedIn Bio Generator</Link></li>
               <li><Link to="/tools/social-media-bio-generator" className="text-gray-600 hover:text-primary text-sm">Social Media Bio Generator</Link></li>
-              <li><Link to="/tools/facebook-ads-generator" className="text-gray-600 hover:text-primary text-sm">Facebook Ads Generator</Link></li>
             </ul>
           </div>
 
@@ -84,11 +81,10 @@ const Footer = () => {
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-800">Lifestyle Tools</h3>
             <ul className="space-y-2">
-              <li><Link to="/tools/ai-prompt-enhancer" className="text-gray-600 hover:text-primary text-sm">AI Prompt Enhancer</Link></li>
+              <li><Link to="/tools/prompt-enhancer" className="text-gray-600 hover:text-primary text-sm">AI Prompt Enhancer</Link></li>
               <li><Link to="/tools/short-poem-generator" className="text-gray-600 hover:text-primary text-sm">Short Poem Generator</Link></li>
               <li><Link to="/tools/quote-generator" className="text-gray-600 hover:text-primary text-sm">Quote Generator</Link></li>
               <li><Link to="/tools/horror-story-generator" className="text-gray-600 hover:text-primary text-sm">Horror Story Generator</Link></li>
-              <li><Link to="/tools/invitation-message-generator" className="text-gray-600 hover:text-primary text-sm">Invitation Message Generator</Link></li>
               <li><Link to="/tools/newsletter-generator" className="text-gray-600 hover:text-primary text-sm">Newsletter Generator</Link></li>
             </ul>
           </div>
