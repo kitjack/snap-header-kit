@@ -1,0 +1,4 @@
+
+project_id = "cqyyqhhafougprcnueek"
+name = "generate-refund-policy"
+entrypoint = "/index.ts"
