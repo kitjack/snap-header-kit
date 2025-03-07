@@ -22,6 +22,7 @@ import PromptEnhancer from "./pages/prompt-enhancer";
 import LinkedInBioGenerator from "./pages/linkedin-bio-generator";
 import SocialMediaBioGenerator from "./pages/social-media-bio-generator";
 import AcademicProjectGenerator from "./pages/academic-project-generator";
+import ShortPoemGenerator from "./pages/short-poem-generator";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/tools/linkedin-bio-generator" element={<LinkedInBioGenerator />} />
             <Route path="/tools/social-media-bio-generator" element={<SocialMediaBioGenerator />} />
             <Route path="/tools/academic-project-generator" element={<AcademicProjectGenerator />} />
+            <Route path="/tools/short-poem-generator" element={<ShortPoemGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
