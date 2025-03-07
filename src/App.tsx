@@ -34,7 +34,6 @@ import DietMealPlanGenerator from "./pages/diet-meal-plan-generator";
 import FacebookAdsGenerator from "./pages/facebook-ads-generator";
 import GoogleAdsGenerator from "./pages/google-ads-generator";
 import NewsletterGenerator from "./pages/newsletter-generator";
-import TravelItineraryGenerator from "./pages/travel-itinerary-generator";
 
 const queryClient = new QueryClient();
 
@@ -74,7 +73,6 @@ const App = () => (
             <Route path="/tools/facebook-ads-generator" element={<FacebookAdsGenerator />} />
             <Route path="/tools/google-ads-generator" element={<GoogleAdsGenerator />} />
             <Route path="/tools/newsletter-generator" element={<NewsletterGenerator />} />
-            <Route path="/tools/travel-itinerary-generator" element={<TravelItineraryGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
