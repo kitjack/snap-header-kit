@@ -2,7 +2,7 @@
 import React from 'react';
 import Layout from '@/components/Layout';
 import ToolCard from '@/components/ToolCard';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Lightbulb } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -69,6 +69,12 @@ const Index = () => {
             description="Generate innovative academic project ideas."
             href="/tools/academic-project-generator"
             icon={Sparkles}
+          />
+          <ToolCard
+            title="Project Topic Generator"
+            description="Generate detailed project ideas for any field."
+            href="/tools/project-topic-generator"
+            icon={Lightbulb}
           />
           <ToolCard
             title="Short Poem Generator"
