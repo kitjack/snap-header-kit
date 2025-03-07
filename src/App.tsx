@@ -36,7 +36,6 @@ import GoogleAdsGenerator from "./pages/google-ads-generator";
 import NewsletterGenerator from "./pages/newsletter-generator";
 import ProjectTopicGenerator from "./pages/project-topic-generator";
 import CoverLetterGenerator from "./pages/cover-letter-generator";
-import AboutPageGenerator from './pages/about-page-generator';
 import PrivacyPolicyGenerator from './pages/privacy-policy-generator';
 
 const queryClient = new QueryClient();
@@ -79,7 +78,6 @@ const App = () => (
             <Route path="/tools/newsletter-generator" element={<NewsletterGenerator />} />
             <Route path="/tools/project-topic-generator" element={<ProjectTopicGenerator />} />
             <Route path="/tools/cover-letter-generator" element={<CoverLetterGenerator />} />
-            <Route path="/tools/about-page-generator" element={<AboutPageGenerator />} />
             <Route path="/tools/privacy-policy-generator" element={<PrivacyPolicyGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

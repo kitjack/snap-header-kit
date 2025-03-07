@@ -22,12 +22,6 @@ const Index = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ToolCard
-            title="About Page Generator"
-            description="Create professional and engaging about pages for your business."
-            href="/tools/about-page-generator"
-            icon={Edit}
-          />
-          <ToolCard
             title="Privacy Policy Generator"
             description="Create compliant privacy policies for your website or app."
             href="/tools/privacy-policy-generator"
