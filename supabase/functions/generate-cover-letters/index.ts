@@ -1,7 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { Configuration, OpenAIApi } from "https://esm.sh/openai@3.2.1";
+import { OpenAI } from "https://esm.sh/openai@4.28.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.7.1";
 
 const corsHeaders = {
@@ -35,10 +35,9 @@ serve(async (req) => {
     }
 
     // Initialize OpenAI
-    const configuration = new Configuration({
+    const openai = new OpenAI({
       apiKey: OPENAI_API_KEY,
     });
-    const openai = new OpenAIApi(configuration);
 
     // Initialize Supabase client
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -57,27 +56,33 @@ serve(async (req) => {
     }
     
     prompt += `The tone should be ${tone || 'professional'}. `;
-    prompt += `Format each cover letter as plain text without markdown or formatting. Provide exactly two options.`;
+    prompt += `Format each cover letter as plain text without markdown or formatting. Provide exactly two options separated by "LETTER 1:" and "LETTER 2:" labels.`;
 
     console.log("Sending prompt to OpenAI:", prompt);
 
     // Generate the cover letters
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: prompt,
-      max_tokens: 1500,
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: "You are a professional cover letter writer with expertise in crafting compelling job application letters."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
       temperature: 0.7,
-      n: 1,
     });
 
-    const generatedText = response.data.choices[0].text?.trim() || "Failed to generate cover letters";
-    
-    // Split the text into two cover letters
-    let coverLetters = [];
+    const generatedText = response.choices[0]?.message?.content?.trim() || "Failed to generate cover letters";
     
     // Process the generated text to extract two cover letters
-    // This is a simple approach - depending on the actual output format, you might need to adjust this
-    const splitText = generatedText.split(/Option \d+:|Cover Letter \d+:/i).filter(Boolean);
+    const splitPattern = /LETTER \d+:|Option \d+:|Cover Letter \d+:/i;
+    const splitText = generatedText.split(splitPattern).filter(Boolean);
+    
+    let coverLetters = [];
     
     if (splitText.length >= 2) {
       coverLetters = splitText.slice(0, 2).map((text, index) => ({
@@ -85,16 +90,24 @@ serve(async (req) => {
         content: text.trim()
       }));
     } else {
-      // If the splitting didn't work as expected, just use the entire text as one cover letter
-      coverLetters = [{
-        id: 1,
-        content: generatedText
-      }];
+      // If the splitting didn't work as expected, try other patterns or use the entire text
+      const altPattern = /\n\s*\n/; // Look for double line breaks
+      const altSplit = generatedText.split(altPattern).filter(text => text.trim().length > 100);
+      
+      if (altSplit.length >= 2) {
+        coverLetters = altSplit.slice(0, 2).map((text, index) => ({
+          id: index + 1,
+          content: text.trim()
+        }));
+      } else {
+        // Just use the entire text as one cover letter
+        coverLetters = [{
+          id: 1,
+          content: generatedText
+        }];
+      }
     }
 
-    console.log("Generated cover letters:", coverLetters);
-
-    // Log the generated content for debugging
     console.log(`Generated ${coverLetters.length} cover letters for user ${userId}`);
 
     return new Response(

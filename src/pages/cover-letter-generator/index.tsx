@@ -31,63 +31,73 @@ const CoverLetterGenerator = () => {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          {results.length === 0 ? (
-            <CoverLetterForm 
-              formData={formData}
-              isLoading={isLoading}
-              insufficientCredits={insufficientCredits}
-              handleInputChange={handleInputChange}
-              handleSubmit={handleSubmit}
-              renderCreditInfo={renderCreditInfo}
-              user={user}
-              profile={profile}
-            />
-          ) : (
+          <CoverLetterForm 
+            formData={formData}
+            isLoading={isLoading}
+            insufficientCredits={insufficientCredits}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            renderCreditInfo={renderCreditInfo}
+            user={user}
+            profile={profile}
+          />
+          
+          {results.length > 0 ? (
             <ResultsDisplay 
               results={results}
               isLoading={isLoading}
               onReset={resetForm}
               onCopy={copyToClipboard}
             />
+          ) : (
+            <div className="bg-accent/10 p-6 rounded-lg flex flex-col items-center justify-center min-h-[300px]">
+              <FileText className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-muted-foreground text-center">
+                {isLoading 
+                  ? "Generating your cover letters..." 
+                  : "Complete the form to generate tailored cover letters"}
+              </p>
+            </div>
           )}
-          
-          <div className="bg-accent/50 p-6 rounded-lg h-fit">
-            <h2 className="text-xl font-bold mb-4">How It Works</h2>
-            <div className="space-y-6">
-              <div className="flex gap-3">
-                <div className="bg-primary/10 text-primary rounded-full p-2 h-fit">
-                  <Edit className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-base">Input Job Details</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Enter the job title, description, your experience, and skills.
-                  </p>
-                </div>
+        </div>
+        
+        {/* How It Works Section - moved below the tool */}
+        <div className="bg-accent/50 p-6 rounded-lg mb-8">
+          <h2 className="text-xl font-bold mb-4">How It Works</h2>
+          <div className="space-y-6">
+            <div className="flex gap-3">
+              <div className="bg-primary/10 text-primary rounded-full p-2 h-fit">
+                <Edit className="h-5 w-5" />
               </div>
-              
-              <div className="flex gap-3">
-                <div className="bg-primary/10 text-primary rounded-full p-2 h-fit">
-                  <FileText className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-base">AI Letter Generation</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Our AI analyzes your information and crafts tailored cover letters.
-                  </p>
-                </div>
+              <div>
+                <h3 className="font-medium text-base">Input Job Details</h3>
+                <p className="text-sm text-muted-foreground">
+                  Enter the job title, description, your experience, and skills.
+                </p>
               </div>
-              
-              <div className="flex gap-3">
-                <div className="bg-primary/10 text-primary rounded-full p-2 h-fit">
-                  <FileCheck className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-medium text-base">Customize & Submit</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Copy your preferred letter, customize if needed, and submit with your application.
-                  </p>
-                </div>
+            </div>
+            
+            <div className="flex gap-3">
+              <div className="bg-primary/10 text-primary rounded-full p-2 h-fit">
+                <FileText className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-medium text-base">AI Letter Generation</h3>
+                <p className="text-sm text-muted-foreground">
+                  Our AI analyzes your information and crafts tailored cover letters.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex gap-3">
+              <div className="bg-primary/10 text-primary rounded-full p-2 h-fit">
+                <FileCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-medium text-base">Customize & Submit</h3>
+                <p className="text-sm text-muted-foreground">
+                  Copy your preferred letter, customize if needed, and submit with your application.
+                </p>
               </div>
             </div>
           </div>
