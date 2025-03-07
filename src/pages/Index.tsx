@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import ToolCard from '@/components/ToolCard';
 import HeroSection from '@/components/HeroSection';
-import { Sparkles, Lightbulb } from 'lucide-react';
+import { Sparkles, Lightbulb, FileText } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -80,6 +80,12 @@ const Index = () => {
             description="Generate detailed project ideas for any field."
             href="/tools/project-topic-generator"
             icon={Lightbulb}
+          />
+          <ToolCard
+            title="Cover Letter Generator"
+            description="Create tailored cover letters for job applications."
+            href="/tools/cover-letter-generator"
+            icon={FileText}
           />
           <ToolCard
             title="Short Poem Generator"

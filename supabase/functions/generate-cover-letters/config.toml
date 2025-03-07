@@ -1,0 +1,4 @@
+
+project_id = "cqyyqhhafougprcnueek"
+name = "generate-cover-letters"
+entrypoint = "/index.ts"
