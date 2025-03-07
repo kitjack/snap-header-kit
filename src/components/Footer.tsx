@@ -7,6 +7,42 @@ const Footer = () => {
   return (
     <footer className="bg-gray-50 py-12 mt-12">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+        {/* New Footer Columns Layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 border-b border-gray-200 pb-10">
+          {/* Quick Links Column */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-800">Quick Links</h3>
+            <ul className="space-y-2">
+              <li><Link to="/" className="text-gray-600 hover:text-primary text-sm">Home</Link></li>
+              <li><Link to="/premium" className="text-gray-600 hover:text-primary text-sm">Premium</Link></li>
+            </ul>
+          </div>
+          
+          {/* Legal Column */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-800">Legal</h3>
+            <ul className="space-y-2">
+              <li><Link to="/privacy-policy" className="text-gray-600 hover:text-primary text-sm">Privacy Policy</Link></li>
+              <li><Link to="/terms-of-service" className="text-gray-600 hover:text-primary text-sm">Terms of Service</Link></li>
+            </ul>
+          </div>
+          
+          {/* Contact Column */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-800">Contact</h3>
+            <ul className="space-y-2">
+              <li><Link to="/contact" className="text-gray-600 hover:text-primary text-sm">Contact Us</Link></li>
+              <li>
+                <a href="mailto:support@wpress.ai" className="text-gray-600 hover:text-primary text-sm flex items-center gap-1">
+                  <Mail className="h-3.5 w-3.5" />
+                  support@wpress.ai
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Original Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
@@ -18,14 +54,6 @@ const Footer = () => {
             <p className="text-gray-600 text-sm">
               The largest collection of free AI tools for WordPress. Embed or use for free.
             </p>
-            <div className="flex space-x-4 pt-2">
-              <a href="https://twitter.com" className="text-gray-500 hover:text-primary" target="_blank" rel="noopener noreferrer">
-                Twitter
-              </a>
-              <a href="https://github.com" className="text-gray-500 hover:text-primary" target="_blank" rel="noopener noreferrer">
-                GitHub
-              </a>
-            </div>
           </div>
 
           {/* Business Tools Column */}
