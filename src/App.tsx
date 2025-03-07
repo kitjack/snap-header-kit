@@ -13,6 +13,9 @@ import UpdatePassword from "./pages/UpdatePassword";
 import Profile from "./pages/Profile";
 import Premium from "./pages/Premium";
 import NotFound from "./pages/NotFound";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 import BusinessNameGenerator from "./pages/business-name-generator";
 import EtsyTagGenerator from "./pages/etsy-tag-generator";
 import SloganGenerator from "./pages/slogan-generator";
@@ -48,6 +51,9 @@ const App = () => (
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/premium" element={<Premium />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/tools/business-name-generator" element={<BusinessNameGenerator />} />
             <Route path="/tools/etsy-tag-generator" element={<EtsyTagGenerator />} />
             <Route path="/tools/slogan-generator" element={<SloganGenerator />} />

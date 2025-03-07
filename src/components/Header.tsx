@@ -19,6 +19,12 @@ const Header = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
+  const navLinks = [
+    { to: "/contact", label: "Contact" },
+    { to: "/privacy-policy", label: "Privacy Policy" },
+    { to: "/terms-of-service", label: "Terms of Service" },
+  ];
+
   return (
     <header className="py-4 relative">
       <div className="flex justify-between items-center">
@@ -41,6 +47,21 @@ const Header = () => {
             {mobileMenuOpen && (
               <div className="absolute top-full left-0 right-0 bg-white shadow-lg z-50 p-4 border-t border-gray-100 mt-1">
                 <div className="flex flex-col space-y-3">
+                  {/* Navigation Links */}
+                  {!user && (
+                    <div className="border-b border-gray-100 pb-2 mb-2">
+                      {navLinks.map((link) => (
+                        <Link 
+                          key={link.to} 
+                          to={link.to} 
+                          className="block py-2 text-gray-600 hover:text-primary"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
                   {user ? (
                     <>
                       <div className="text-sm font-medium px-3 py-1 bg-secondary/10 text-secondary rounded-md self-start">
@@ -76,6 +97,20 @@ const Header = () => {
           </>
         ) : (
           <div className="flex items-center space-x-4">
+            {/* Desktop Navigation Links for guests */}
+            {!user && (
+              <div className="flex mr-4">
+                {navLinks.map((link) => (
+                  <Link 
+                    key={link.to} 
+                    to={link.to} 
+                    className="mx-3 text-gray-600 hover:text-primary text-sm"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
             {user ? (
               <>
                 <div className="text-sm font-medium px-3 py-1 bg-secondary/10 text-secondary rounded-md">
