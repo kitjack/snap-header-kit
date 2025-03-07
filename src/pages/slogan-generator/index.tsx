@@ -73,21 +73,21 @@ const SloganGenerator = () => {
 
         {/* Information Sections */}
         <div className="mt-12 space-y-6">
-          <div className="bg-[#E1F5F3] p-6 rounded-lg">
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">What is a Slogan Generator?</h2>
             <p className="text-gray-700">
               A Slogan Generator is an AI-powered tool that creates catchy, memorable taglines for your business, brand, or product. A great slogan can effectively communicate your brand's value proposition and leave a lasting impression on potential customers. Our generator uses advanced language models to create slogans that are relevant to your business, align with your desired tone, and have the potential to become a recognizable part of your brand identity.
             </p>
           </div>
           
-          <div className="bg-[#D6F0EE] p-6 rounded-lg">
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">Using It</h2>
             <p className="text-gray-700">
               To generate effective slogans, start by entering a detailed description of your business, including your values, mission, and what sets you apart from competitors. Select your industry from the dropdown menu to further contextualize your business. Choose a tone that aligns with your brand personality (professional, friendly, clever, etc.). Click "Generate Slogans" and our AI will create multiple slogan options for you to choose from. You can easily copy any slogan that resonates with your brand vision.
             </p>
           </div>
           
-          <div className="bg-[#CBEAE7] p-6 rounded-lg">
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">Tips</h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
               <li>Focus on your key value proposition or unique selling point in your description</li>
@@ -100,7 +100,7 @@ const SloganGenerator = () => {
             </ul>
           </div>
           
-          <div className="bg-[#BFE5E1] p-6 rounded-lg">
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">FAQ</h2>
             <div className="space-y-3">
               <div>
@@ -118,7 +118,7 @@ const SloganGenerator = () => {
             </div>
           </div>
           
-          <div className="bg-[#B4DEDB] p-6 rounded-lg">
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">Privacy</h2>
             <p className="text-gray-700">
               The business information you provide is used exclusively for generating slogan suggestions and is not shared with third parties. The slogans generated are private to your account, and you retain full rights to use any slogan you create with our tool. We understand the sensitive nature of branding elements and maintain strict confidentiality regarding your business details and generated content. For more comprehensive information, please review our Privacy Policy.
