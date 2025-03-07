@@ -55,21 +55,21 @@ const EtsyTagGenerator = () => {
 
         {/* Information Sections */}
         <div className="mt-12 space-y-6">
-          <div className="bg-[#F2FCE2] p-6 rounded-lg">
+          <div className="bg-[#E1F5F3] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">What is an Etsy Tag Generator?</h2>
             <p className="text-gray-700">
               An Etsy Tag Generator is a specialized tool designed to help Etsy sellers optimize their product listings with effective SEO tags. Using advanced AI algorithms, it analyzes your product descriptions and creates relevant, search-friendly tags that can significantly increase your shop's visibility in Etsy's search results. With the right tags, potential customers are more likely to discover your products, leading to improved traffic and potentially higher sales.
             </p>
           </div>
           
-          <div className="bg-[#FEF7CD] p-6 rounded-lg">
+          <div className="bg-[#D6F0EE] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">Using It</h2>
             <p className="text-gray-700">
               To use the Etsy Tag Generator, simply enter a detailed description of your product, select the appropriate category, and add any specific keywords you'd like to incorporate. Our AI will analyze this information and generate 13 optimized tags (the maximum Etsy allows) that are tailored to your product. These tags are designed to be concise (under 20 characters) and relevant to maximize your product's discoverability. Once generated, you can easily copy the tags and add them to your Etsy listing.
             </p>
           </div>
           
-          <div className="bg-[#FDE1D3] p-6 rounded-lg">
+          <div className="bg-[#CBEAE7] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">Tips</h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
               <li>Be specific and descriptive when entering your product details</li>
@@ -82,7 +82,7 @@ const EtsyTagGenerator = () => {
             </ul>
           </div>
           
-          <div className="bg-[#D3E4FD] p-6 rounded-lg">
+          <div className="bg-[#BFE5E1] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">FAQ</h2>
             <div className="space-y-3">
               <div>
@@ -100,7 +100,7 @@ const EtsyTagGenerator = () => {
             </div>
           </div>
           
-          <div className="bg-[#E5DEFF] p-6 rounded-lg">
+          <div className="bg-[#B4DEDB] p-6 rounded-lg">
             <h2 className="text-xl font-semibold mb-3">Privacy</h2>
             <p className="text-gray-700">
               Your product information and generated tags are kept confidential. We use your descriptions solely for the purpose of generating relevant tags and do not store or share this information with third parties. Your SEO strategy is an important part of your business, and we respect your privacy by ensuring that the tags we generate for you remain private to your account. For more information, please refer to our comprehensive Privacy Policy.
