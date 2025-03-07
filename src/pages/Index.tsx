@@ -1,20 +1,24 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
-import HeroSection from '@/components/HeroSection';
-import ToolCard from '@/components/ToolCard';
 import { 
-  MessageSquare, 
-  ShoppingBag, 
-  Hash, 
   Briefcase, 
+  Tag, 
+  MessageSquareText, 
   Globe, 
-  PenTool, 
-  Feather, 
+  ShoppingBag, 
+  Zap, 
+  FileEdit, 
   GraduationCap, 
+  Feather, 
   Quote, 
-  Skull,
-  Dumbbell
+  Skull, 
+  Dumbbell,
+  Utensils
 } from 'lucide-react';
 
 const Index = () => {

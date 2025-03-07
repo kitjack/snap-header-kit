@@ -26,6 +26,7 @@ import ShortPoemGenerator from "./pages/short-poem-generator";
 import QuoteGenerator from "./pages/quote-generator";
 import HorrorStoryGenerator from "./pages/horror-story-generator";
 import WorkoutRoutineGenerator from "./pages/workout-routine-generator";
+import DietMealPlanGenerator from "./pages/diet-meal-plan-generator";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
             <Route path="/tools/quote-generator" element={<QuoteGenerator />} />
             <Route path="/tools/horror-story-generator" element={<HorrorStoryGenerator />} />
             <Route path="/tools/workout-routine-generator" element={<WorkoutRoutineGenerator />} />
+            <Route path="/tools/diet-meal-plan-generator" element={<DietMealPlanGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
