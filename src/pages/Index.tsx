@@ -23,7 +23,8 @@ import {
   Dumbbell,
   Utensils,
   Hash,
-  PenTool
+  PenTool,
+  Mail
 } from 'lucide-react';
 
 const Index = () => {
@@ -145,6 +146,13 @@ const Index = () => {
             description="Create compelling Google ads that engage your target audience and drive conversions."
             icon={<MessageSquare className="text-primary" />}
             linkTo="/tools/google-ads-generator"
+          />
+
+          <ToolCard 
+            title="Newsletter Generator" 
+            description="Create professional and compelling newsletters for your audience."
+            icon={<Mail className="text-primary" />}
+            linkTo="/tools/newsletter-generator"
           />
         </div>
       </div>
