@@ -25,7 +25,7 @@ const About = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
             <div className="mb-4 text-primary">
               <Zap className="h-8 w-8" />
@@ -33,16 +33,6 @@ const About = () => {
             <h3 className="text-lg font-semibold mb-2">Time-Saving</h3>
             <p className="text-gray-600">
               Generate high-quality content in seconds rather than spending hours writing it yourself.
-            </p>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-            <div className="mb-4 text-primary">
-              <Laptop className="h-8 w-8" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">WordPress Integration</h3>
-            <p className="text-gray-600">
-              Seamlessly embed our tools directly into your WordPress website for on-demand content generation.
             </p>
           </div>
           
@@ -80,17 +70,6 @@ const About = () => {
               </div>
               <div>
                 <strong className="font-medium">Cost-Effective:</strong> Access powerful AI tools without the high price tag of premium AI services.
-              </div>
-            </li>
-            
-            <li className="flex items-start gap-3">
-              <div className="bg-primary/10 text-primary rounded-full p-1 mt-0.5">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <div>
-                <strong className="font-medium">WordPress Integration:</strong> Embed our tools directly into your WordPress site for seamless content creation.
               </div>
             </li>
             
