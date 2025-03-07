@@ -5,9 +5,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import Layout from '@/components/Layout';
+import HeroSection from '@/components/HeroSection';
+import ToolCard from '@/components/ToolCard';
 import { 
   Briefcase, 
   Tag, 
+  MessageSquare,
   MessageSquareText, 
   Globe, 
   ShoppingBag, 
@@ -18,7 +21,9 @@ import {
   Quote, 
   Skull, 
   Dumbbell,
-  Utensils
+  Utensils,
+  Hash,
+  PenTool
 } from 'lucide-react';
 
 const Index = () => {
@@ -119,6 +124,13 @@ const Index = () => {
             description="Create personalized workout routines based on your fitness goals."
             icon={<Dumbbell className="text-primary" />}
             linkTo="/tools/workout-routine-generator"
+          />
+          
+          <ToolCard 
+            title="Diet Meal Plan Generator" 
+            description="Create personalized meal plans tailored to your dietary preferences and goals."
+            icon={<Utensils className="text-primary" />}
+            linkTo="/tools/diet-meal-plan-generator"
           />
         </div>
       </div>
