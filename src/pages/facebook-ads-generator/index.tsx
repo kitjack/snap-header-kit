@@ -34,7 +34,7 @@ const FacebookAdsGenerator = () => {
         </div>
         
         <p className="text-muted-foreground mb-8">
-          Create compelling Facebook ads that engage your target audience and drive results for your business.
+          Create engaging Facebook ads that capture attention, drive engagement, and generate conversions for your business.
         </p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -64,7 +64,7 @@ const FacebookAdsGenerator = () => {
               <p className="text-muted-foreground text-center">
                 {isLoading 
                   ? "Generating your Facebook ads..." 
-                  : "Complete the form to generate professional Facebook ads"}
+                  : "Complete the form to generate engaging Facebook ads"}
               </p>
             </div>
           )}
@@ -75,6 +75,61 @@ const FacebookAdsGenerator = () => {
             {error}
           </div>
         )}
+
+        {/* Information Sections */}
+        <div className="mt-12 space-y-6">
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">What is a Facebook Ads Generator?</h2>
+            <p className="text-gray-700">
+              A Facebook Ads Generator is an AI-powered tool designed to create compelling ad copy and content specifically optimized for Facebook's advertising platform. It produces attention-grabbing headlines, engaging primary text, and effective descriptions that align with Facebook's best practices and character limits. Our generator helps you craft ads that resonate with your target audience, communicate your value proposition clearly, and include strong calls-to-action to drive engagement and conversions. Whether you're promoting products, services, events, or content, this tool helps you quickly develop multiple ad variations to test performance and optimize your social media advertising strategy, ultimately improving your return on ad spend.
+            </p>
+          </div>
+          
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">Using It</h2>
+            <p className="text-gray-700">
+              To generate effective Facebook ads, start by entering your business or product name and a detailed description of what you're promoting. Specify your target audience demographics, interests, and pain points to ensure the ad copy resonates with the right people. Include your unique selling propositions and any special offers or promotions you're featuring. Select your campaign objective (brand awareness, lead generation, sales, etc.) and preferred ad tone (friendly, professional, humorous, urgent, etc.). After clicking "Generate Ads," you'll receive multiple ad variants with primary text, headlines, and descriptions formatted according to Facebook's requirements. You can easily copy the ad elements you prefer directly into your Facebook Ads Manager or export them for future use.
+            </p>
+          </div>
+          
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">Tips</h2>
+            <ul className="list-disc list-inside text-gray-700 space-y-2">
+              <li>Focus on the customer benefits rather than just product features in your description</li>
+              <li>Include specific pain points your target audience experiences that your offering solves</li>
+              <li>Add social proof elements like testimonials or user numbers in your product description</li>
+              <li>Generate multiple ad variations to test different messaging approaches</li>
+              <li>Consider creating separate ads for different audience segments with tailored messaging</li>
+              <li>Use emotional triggers appropriate for your brand and offering</li>
+              <li>Include a clear, specific call-to-action that tells users exactly what to do next</li>
+            </ul>
+          </div>
+          
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">FAQ</h2>
+            <div className="space-y-3">
+              <div>
+                <h3 className="font-medium">Will these ads comply with Facebook's policies?</h3>
+                <p className="text-gray-700">Our generator is designed to create ads that follow Facebook's general advertising guidelines. However, Facebook has specific restrictions for certain industries (like finance, healthcare, politics) and their policies evolve regularly. We recommend reviewing Facebook's current advertising policies for your specific industry and making any necessary adjustments before publishing.</p>
+              </div>
+              <div>
+                <h3 className="font-medium">What about images for my Facebook ads?</h3>
+                <p className="text-gray-700">Our generator focuses on creating compelling ad copy. For images, you'll need to source high-quality visuals separately that align with your brand and message. Remember that Facebook's algorithm typically favors ads with less than 20% text in the image itself.</p>
+              </div>
+              <div>
+                <h3 className="font-medium">How should I choose which ad variation to use?</h3>
+                <p className="text-gray-700">The most effective approach is to implement multiple ad variations in your campaign and let Facebook's algorithm test their performance. This A/B testing method allows you to see which headlines, primary text, and descriptions generate the best engagement and conversion rates for your specific audience and offering.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-[#f4fcfb] p-6 rounded-lg">
+            <h2 className="text-xl font-semibold mb-3">Privacy</h2>
+            <p className="text-gray-700">
+              We understand the competitive nature of social media advertising and treat your business information with strict confidentiality. The product descriptions, target audience details, and marketing strategies you provide are used solely for generating ad copy and are not shared with third parties. The ads generated are private to your account, and you retain full rights to use them in your marketing campaigns. We do not store your specific ad requests for purposes beyond the immediate generation process, and we maintain strict privacy standards to protect your business information. For more comprehensive details on our data handling practices, please refer to our detailed Privacy Policy.
+            </p>
+          </div>
+        </div>
       </div>
     </Layout>
   );
