@@ -24,6 +24,7 @@ import SocialMediaBioGenerator from "./pages/social-media-bio-generator";
 import AcademicProjectGenerator from "./pages/academic-project-generator";
 import ShortPoemGenerator from "./pages/short-poem-generator";
 import QuoteGenerator from "./pages/quote-generator";
+import HorrorStoryGenerator from "./pages/horror-story-generator";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
             <Route path="/tools/academic-project-generator" element={<AcademicProjectGenerator />} />
             <Route path="/tools/short-poem-generator" element={<ShortPoemGenerator />} />
             <Route path="/tools/quote-generator" element={<QuoteGenerator />} />
+            <Route path="/tools/horror-story-generator" element={<HorrorStoryGenerator />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

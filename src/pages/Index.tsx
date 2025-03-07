@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '@/components/Layout';
 import HeroSection from '@/components/HeroSection';
 import ToolCard from '@/components/ToolCard';
-import { Briefcase, Tags, Type, Globe, Store, Zap, Linkedin, MessageSquare, GraduationCap, ShoppingBag, Feather, Quote } from 'lucide-react';
+import { Briefcase, Tags, Type, Globe, Store, Zap, Linkedin, MessageSquare, GraduationCap, ShoppingBag, Feather, Quote, Skull } from 'lucide-react';
 
 const tools = [
   {
@@ -71,6 +71,12 @@ const tools = [
     description: "Generate inspirational, thought-provoking quotes on any topic for social media, presentations, or personal motivation.",
     icon: <Quote className="text-primary" />,
     linkTo: "/tools/quote-generator"
+  },
+  {
+    title: "Horror Story Generator",
+    description: "Generate spine-chilling horror stories for your creative writing, social media posts, or just to scare your friends.",
+    icon: <Skull className="text-primary" />,
+    linkTo: "/tools/horror-story-generator"
   }
 ];
 
