@@ -44,12 +44,12 @@ serve(async (req) => {
       Create 2 Facebook ad options for a ${businessType} business targeting ${targetAudience} with the objective of ${objective}.
       ${keywords ? `Key selling points: ${keywords}` : ''}
       
-      For each ad:
+      For each ad, provide:
       - Headline (40 characters max)
       - Primary text (125 characters max)
       - Description (30 characters max)
-      - Call to action button 
-      - Image description
+      - Call to action suggestion
+      - Image description (brief suggestion for an image that would work well with the ad)
     `;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -79,8 +79,30 @@ serve(async (req) => {
     }
 
     const data = await response.json();
+    console.log('OpenAI response data:', data);
+    
+    // Simple fallback ads in case parsing fails
+    const fallbackAds = [
+      {
+        id: 1,
+        headline: `Great ${businessType} Solution`,
+        primaryText: `Our ${businessType} service helps ${targetAudience} achieve ${objective} faster and easier than competitors.`,
+        description: "Limited time offer!",
+        cta: "Learn More",
+        imageDescription: `A customer enjoying our ${businessType} product/service.`
+      },
+      {
+        id: 2,
+        headline: `${businessType} Innovation`,
+        primaryText: `Discover how our ${businessType} can transform your business. Perfect for ${targetAudience}.`,
+        description: "Exclusive benefits",
+        cta: "Sign Up Now",
+        imageDescription: `Happy customers using our ${businessType} solution with visible results.`
+      }
+    ];
+    
     let adOptions;
-
+    
     try {
       // Get the content from OpenAI response
       const content = data.choices[0].message.content;
@@ -98,46 +120,12 @@ serve(async (req) => {
           try {
             adOptions = JSON.parse(jsonMatch[0]);
           } catch (extractError) {
-            // If still can't parse, create basic structure
-            adOptions = [
-              {
-                id: 1,
-                headline: "Compelling Offer",
-                primaryText: "Check out our amazing product that solves your problems.",
-                description: "Limited time offer",
-                cta: "Learn More",
-                imageDescription: "Professional image related to the business",
-              },
-              {
-                id: 2,
-                headline: "Special Deal",
-                primaryText: "Discover how our service can transform your experience.",
-                description: "Exclusive benefits",
-                cta: "Shop Now",
-                imageDescription: "Customer enjoying the product with visible satisfaction",
-              }
-            ];
+            console.error('Error parsing extracted JSON:', extractError);
+            adOptions = fallbackAds;
           }
         } else {
-          // Create fallback structure
-          adOptions = [
-            {
-              id: 1,
-              headline: "Compelling Offer",
-              primaryText: "Check out our amazing product that solves your problems.",
-              description: "Limited time offer",
-              cta: "Learn More",
-              imageDescription: "Professional image related to the business",
-            },
-            {
-              id: 2,
-              headline: "Special Deal",
-              primaryText: "Discover how our service can transform your experience.",
-              description: "Exclusive benefits",
-              cta: "Shop Now",
-              imageDescription: "Customer enjoying the product with visible satisfaction",
-            }
-          ];
+          console.error('No JSON pattern found in content, using fallback');
+          adOptions = fallbackAds;
         }
       }
       
@@ -154,35 +142,17 @@ serve(async (req) => {
       adOptions = adOptions.map((ad, index) => {
         return {
           id: ad.id || index + 1,
-          headline: ad.headline || "Compelling Offer",
-          primaryText: ad.primaryText || "Check out our amazing product that solves your problems.",
+          headline: ad.headline || `Great ${businessType} Solution`,
+          primaryText: ad.primaryText || `Our ${businessType} service helps ${targetAudience} achieve ${objective}.`,
           description: ad.description || "Limited time offer",
           cta: ad.cta || "Learn More",
-          imageDescription: ad.imageDescription || "Professional image related to the business",
+          imageDescription: ad.imageDescription || `A customer enjoying our ${businessType} product/service.`
         };
       });
       
     } catch (error) {
       console.error('Error processing OpenAI response:', error);
-      // Complete fallback in case all parsing attempts fail
-      adOptions = [
-        {
-          id: 1,
-          headline: "Compelling Offer for " + businessType,
-          primaryText: "Check out our amazing product that solves your problems.",
-          description: "Limited time offer",
-          cta: "Learn More",
-          imageDescription: "Professional image related to the business",
-        },
-        {
-          id: 2,
-          headline: "Special Deal for " + businessType,
-          primaryText: "Discover how our service can transform your experience.",
-          description: "Exclusive benefits",
-          cta: "Shop Now",
-          imageDescription: "Customer enjoying the product with visible satisfaction",
-        }
-      ];
+      adOptions = fallbackAds;
     }
 
     return new Response(
