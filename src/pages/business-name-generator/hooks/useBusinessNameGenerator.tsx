@@ -5,6 +5,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { GENERATION_COST } from '../components/BusinessDescriptionForm';
 import { AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 interface FormData {
   description: string;
@@ -187,7 +189,16 @@ export const useBusinessNameGenerator = () => {
   const renderCreditInfo = () => {
     if (loading) return <div className="text-sm text-muted-foreground">Loading credits...</div>;
     
-    if (!user) return <div className="text-sm text-amber-600">Login to generate names</div>;
+    if (!user) return (
+      <div className="flex space-x-2">
+        <Button asChild variant="outline" size="sm" className="bg-secondary hover:bg-secondary/90 text-white">
+          <Link to="/login">Login</Link>
+        </Button>
+        <Button asChild variant="outline" size="sm" className="bg-primary hover:bg-primary/90 text-white">
+          <Link to="/register">Register</Link>
+        </Button>
+      </div>
+    );
     
     if (insufficientCredits) {
       return (
