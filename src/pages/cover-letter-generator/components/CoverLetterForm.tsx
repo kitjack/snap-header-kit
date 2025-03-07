@@ -11,8 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, AlertCircle, Coins, FileText } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Loader2, AlertCircle, FileText } from 'lucide-react';
 import { GENERATION_COST } from '../hooks/useCoverLetterGenerator';
 
 interface FormData {
@@ -157,15 +156,6 @@ const CoverLetterForm: React.FC<CoverLetterFormProps> = ({
             <AlertCircle className="h-4 w-4" />
             <span>Insufficient credits for generation</span>
           </div>
-          <Button 
-            asChild
-            className="w-full bg-amber-500 hover:bg-amber-600 text-white"
-          >
-            <Link to="/premium">
-              <Coins className="mr-2 h-4 w-4" />
-              Top Up Credits
-            </Link>
-          </Button>
         </div>
       )}
     </form>

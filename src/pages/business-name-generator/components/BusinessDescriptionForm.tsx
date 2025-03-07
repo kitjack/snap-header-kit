@@ -4,8 +4,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle, Coins } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Loader2, AlertCircle } from 'lucide-react';
 
 // Cost per generation in credits
 export const GENERATION_COST = 10;
@@ -102,15 +101,6 @@ const BusinessDescriptionForm: React.FC<BusinessDescriptionFormProps> = ({
             <AlertCircle className="h-4 w-4" />
             <span>Insufficient credits for generation</span>
           </div>
-          <Button 
-            asChild
-            className="w-full bg-amber-500 hover:bg-amber-600 text-white"
-          >
-            <Link to="/premium">
-              <Coins className="mr-2 h-4 w-4" />
-              Top Up Credits
-            </Link>
-          </Button>
         </div>
       )}
     </div>

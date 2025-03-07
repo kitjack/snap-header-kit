@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Link } from 'react-router-dom';
 
 const HeroSection = () => {
   return (
@@ -12,9 +11,6 @@ const HeroSection = () => {
       <p className="text-xl mb-8">
         Get 100 free credits every day for unlimited generation
       </p>
-      <Button asChild className="bg-secondary hover:bg-secondary/90 text-white font-medium px-8 py-6 rounded-lg">
-        <Link to="/premium">Unlock Premium</Link>
-      </Button>
     </div>
   );
 };
