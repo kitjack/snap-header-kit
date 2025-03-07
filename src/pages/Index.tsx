@@ -132,6 +132,13 @@ const Index = () => {
             icon={<Utensils className="text-primary" />}
             linkTo="/tools/diet-meal-plan-generator"
           />
+          
+          <ToolCard 
+            title="Facebook Ads Generator" 
+            description="Create compelling Facebook ads that engage your target audience and drive results."
+            icon={<MessageSquare className="text-primary" />}
+            linkTo="/tools/facebook-ads-generator"
+          />
         </div>
       </div>
     </Layout>
